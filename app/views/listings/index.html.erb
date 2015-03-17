@@ -1,4 +1,3 @@
-<p id="notice"><%= notice %></p>
 <div class="center">
   <div class="row">
     <% @listings.each do |listing| %>
@@ -22,6 +21,6 @@
 </div>
 
 <br>
-<% if user.signed_in?%>
+<% if user_signed_in?%>
   <%= link_to "New Listing", new_listing_path, class: "btn btn-link" %>\
 <% end %>

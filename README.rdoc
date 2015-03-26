@@ -27,5 +27,7 @@ badan sudah capek dan agak demam kayanya bakalan sakit lama ini
 mana saya bawa komputernya teman lagi
 besok insay ALLAH siap
 
+tapi ini pelajaran base rails makin susah saja, nda tau mesti dari mana mesti saya ulang lagi ini bacaannya dulu
+
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

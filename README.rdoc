@@ -23,6 +23,7 @@ Things you may want to cover:
 
 * ...
 malam ini sebenarnya istirahat sudah ngodingnya
+badan sudah capek dan agak demam kayanya bakalan sakit lama ini
 
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

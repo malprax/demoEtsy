@@ -30,5 +30,7 @@ besok insay ALLAH siap
 tapi ini pelajaran base rails makin susah saja, nda tau mesti dari mana mesti saya ulang lagi ini bacaannya dulu
 
 hari ini jumat 27 maret 2015 saya belum bisa ngerjain banyak
+
+penawaran yang ada tinggalh penawaran, banyak hal yang baru tiap harinya saya dapat di pemrograman
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

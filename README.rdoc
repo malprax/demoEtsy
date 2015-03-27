@@ -40,5 +40,7 @@ dan mudah mudahan saja website belajara dari baserails sudah bisa diterapkan lan
 
 target malam ini dilihat sedikit dulu trips dari base rails
 
+rencananya mau tidur jam 12 saja dlu terlalu lelah hari ini
+
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

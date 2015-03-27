@@ -32,5 +32,7 @@ tapi ini pelajaran base rails makin susah saja, nda tau mesti dari mana mesti sa
 hari ini jumat 27 maret 2015 saya belum bisa ngerjain banyak
 
 penawaran yang ada tinggalh penawaran, banyak hal yang baru tiap harinya saya dapat di pemrograman
+mudah mudahan di UPRI lebih baik lagi dgn adanya divisi IT nya
+
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

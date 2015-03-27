@@ -36,5 +36,7 @@ mudah mudahan di UPRI lebih baik lagi dgn adanya divisi IT nya
 
 divisi IT ini bertugas banyak membenahi semua sistem administrasi UPRI
 
+dan mudah mudahan saja website belajara dari baserails sudah bisa diterapkan langsung ilmunya
+
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

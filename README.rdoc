@@ -42,5 +42,8 @@ target malam ini dilihat sedikit dulu trips dari base rails
 
 rencananya mau tidur jam 12 saja dlu terlalu lelah hari ini
 
+
+hari ini telah selesai rapat kerja semoga ke depan lebih baik lagi
+
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

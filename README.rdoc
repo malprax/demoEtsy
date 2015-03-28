@@ -55,5 +55,8 @@ besok juga saya mau istirahat yang cukup
 besok juga saya mau menyiapkan data data lengkap masalah kelurahan
 besok juga saya mau print spanduk
 
+
+hari ini mau melakukan semua agenda yang direncanakan sebelumnya
+
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

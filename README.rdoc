@@ -44,6 +44,7 @@ rencananya mau tidur jam 12 saja dlu terlalu lelah hari ini
 
 
 hari ini telah selesai rapat kerja semoga ke depan lebih baik lagi
+dan semoga tidak ada lagi kerusuhan di subuh hari pada saat kita salat
 
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

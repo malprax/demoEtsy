@@ -51,6 +51,8 @@ besok juga saya harus menyusun mata kuliah
 besok juga kembali ngoding perbaiki desain depan website
 besoku juga menyusun praktikum
 besok juga beli cat
+besok juga saya mau istirahat yang cukup
+
 
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

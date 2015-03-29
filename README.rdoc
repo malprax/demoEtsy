@@ -60,5 +60,8 @@ hari ini mau melakukan semua agenda yang direncanakan sebelumnya
 
 sekarang tinggal mengerjakan sisa pekerjaan yang ada gogogogog
 
+cuman bisa istiraha tmalam ini guys
+pekerjaaan masih banyak numpuk
+
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

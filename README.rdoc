@@ -67,5 +67,6 @@ start lagi aktifitas hari ini
 mau menyusun materi kuliah malam ini
 
 mudah mudahan anak anak mengerti apa yang saya lakukan
+saya mesti cari referensi dulu untuk meyakinkan anak anak masalah resource nya
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

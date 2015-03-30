@@ -63,6 +63,6 @@ pekerjaaan masih banyak numpuk
 mudah mudahan besok bisa diselesaikan
 setelah itu baru bisa tenang tenang
 
-
+start lagi aktifitas hari ini
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

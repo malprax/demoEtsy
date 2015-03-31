@@ -72,5 +72,6 @@ saya mesti cari referensi dulu untuk meyakinkan anak anak masalah resource nya
 nda ada yang mahal kalu nda ada harga pembandingnya
  besok nda tau apa jadi ke tonasa
  mudah mudahan ada juga kejelasan mengenai ini proyek pengadaan di alazhar
+ dan besok pun saya libur kalu dari segi perkuliahan
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

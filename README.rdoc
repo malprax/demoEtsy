@@ -76,5 +76,7 @@ nda ada yang mahal kalu nda ada harga pembandingnya
  mana mata sudah mengantuk ini isi jadwal kuliah
  rencananya mau tidur kalu sudah banyak commit ku
  ya minimal 7 commit lah biar ada aktifitasnya
+ 
+ siapa tau saya bisa mengerjalan kursusku ini besok lebih bagus lagi
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

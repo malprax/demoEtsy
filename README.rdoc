@@ -74,5 +74,6 @@ nda ada yang mahal kalu nda ada harga pembandingnya
  mudah mudahan ada juga kejelasan mengenai ini proyek pengadaan di alazhar
  dan besok pun saya libur kalu dari segi perkuliahan
  mana mata sudah mengantuk ini isi jadwal kuliah
+ rencananya mau tidur kalu sudah banyak commit ku
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

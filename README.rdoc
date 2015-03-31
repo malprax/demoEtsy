@@ -70,6 +70,6 @@ mudah mudahan anak anak mengerti apa yang saya lakukan
 saya mesti cari referensi dulu untuk meyakinkan anak anak masalah resource nya
 
 nda ada yang mahal kalu nda ada harga pembandingnya
-
+ besok nda tau apa jadi ke tonasa
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

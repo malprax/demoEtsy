@@ -84,5 +84,7 @@ nda ada yang mahal kalu nda ada harga pembandingnya
  
  malam ini cukup sekian dulu aktifitasnya
  besok saja baru nyantai kegiatannya
+ 
+ besok ke unhas dan ke upri
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

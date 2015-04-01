@@ -81,5 +81,8 @@ nda ada yang mahal kalu nda ada harga pembandingnya
  
  hari ini nda bisa pulang cepat ada demo uvri menolak caretaker
  ternyata errorku di validates yaitu present semestinya presence
+ 
+ malam ini cukup sekian dulu aktifitasnya
+ 
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

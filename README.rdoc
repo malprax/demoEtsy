@@ -83,6 +83,6 @@ nda ada yang mahal kalu nda ada harga pembandingnya
  ternyata errorku di validates yaitu present semestinya presence
  
  malam ini cukup sekian dulu aktifitasnya
- 
+ besok saja baru nyantai kegiatannya
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

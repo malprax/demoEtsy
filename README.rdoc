@@ -80,5 +80,6 @@ nda ada yang mahal kalu nda ada harga pembandingnya
  siapa tau saya bisa mengerjalan kursusku ini besok lebih bagus lagi
  
  hari ini nda bisa pulang cepat ada demo uvri menolak caretaker
+ ternyata errorku di validates yaitu present semestinya presence
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

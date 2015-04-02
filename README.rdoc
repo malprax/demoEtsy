@@ -89,5 +89,6 @@ nda ada yang mahal kalu nda ada harga pembandingnya
  
  hari ini mau ke upri dan ke unhas
  ada error lagi ini saya dapat di schedule
+ semoga bisa selesai ini urusan
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

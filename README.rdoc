@@ -91,5 +91,7 @@ nda ada yang mahal kalu nda ada harga pembandingnya
  ada error lagi ini saya dapat di schedule
  semoga bisa selesai ini urusan
  saya mau kerja juga bahan ajar ini
+ 
+ ngantuk sudah malam ini
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

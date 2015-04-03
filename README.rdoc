@@ -95,5 +95,6 @@ nda ada yang mahal kalu nda ada harga pembandingnya
  ngantuk sudah malam ini
  
  malam ini vukup istirahatnya
+ besok lanjut kursus 
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

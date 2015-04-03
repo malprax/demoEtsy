@@ -101,5 +101,6 @@ nda ada yang mahal kalu nda ada harga pembandingnya
  bikin website lagi sambil dengar ceramah
  
  besok jalan lg planning 
+ semua mesti d planning lagi dari awal
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

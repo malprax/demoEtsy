@@ -93,5 +93,7 @@ nda ada yang mahal kalu nda ada harga pembandingnya
  saya mau kerja juga bahan ajar ini
  
  ngantuk sudah malam ini
+ 
+ malam ini vukup istirahatnya
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

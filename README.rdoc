@@ -104,5 +104,6 @@ nda ada yang mahal kalu nda ada harga pembandingnya
  semua mesti d planning lagi dari awal
  
  mudah mudahan besok saya ingat input data mahasiswa baru
+ dan sekalian saya mau buat daftar nilai mata kuliah yang sudah keluar
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

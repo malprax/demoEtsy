@@ -112,6 +112,7 @@ nda ada yang mahal kalu nda ada harga pembandingnya
  okey back to nature cari materi kuliah buat hari senin
  
  hari ini sukses buat jurnal album
+ tinggal belajar buat website lagi dengan 3taps
  
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

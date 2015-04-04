@@ -109,5 +109,6 @@ nda ada yang mahal kalu nda ada harga pembandingnya
  awali hari ini dengan basmalah
  
  schedule numpuk cari cari dulu inspirasi
+ okey back to nature cari materi kuliah buat hari senin
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

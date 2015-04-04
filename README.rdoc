@@ -115,6 +115,8 @@ nda ada yang mahal kalu nda ada harga pembandingnya
  tinggal belajar buat website lagi dengan 3taps
  
  sebentar coba dicek lagi
+ mungkin sampai jam dua belas sebentar
+ 
  
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

@@ -110,5 +110,8 @@ nda ada yang mahal kalu nda ada harga pembandingnya
  
  schedule numpuk cari cari dulu inspirasi
  okey back to nature cari materi kuliah buat hari senin
+ 
+ hari ini sukses buat jurnal album
+ 
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

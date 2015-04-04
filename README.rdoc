@@ -114,5 +114,7 @@ nda ada yang mahal kalu nda ada harga pembandingnya
  hari ini sukses buat jurnal album
  tinggal belajar buat website lagi dengan 3taps
  
+ sebentar coba dicek lagi
+ 
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

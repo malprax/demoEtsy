@@ -107,5 +107,7 @@ nda ada yang mahal kalu nda ada harga pembandingnya
  dan sekalian saya mau buat daftar nilai mata kuliah yang sudah keluar
  
  awali hari ini dengan basmalah
+ 
+ schedule numpuk cari cari dulu inspirasi
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

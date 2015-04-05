@@ -122,6 +122,8 @@ nda ada yang mahal kalu nda ada harga pembandingnya
  
  mudah mudahan besok nda terlalu padat kegiatan sehingga mudah urusan web
  
+ ini lagi readme banyak sekalimi di tulis cuman sekedar commit
+ 
  
  
 Please feel free to use a different markup language if you do not plan to run

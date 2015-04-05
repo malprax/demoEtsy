@@ -117,6 +117,8 @@ nda ada yang mahal kalu nda ada harga pembandingnya
  sebentar coba dicek lagi
  mungkin sampai jam dua belas sebentar
  
+ hari ini mulai pukul 18.00 banyak agenda acara
+ 
  
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

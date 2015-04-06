@@ -2694,3 +2694,73 @@ Coming soon!
 
 
 
+
+Yelp Demo Course Page:
+1.Get Up And Running
+Course Introduction
+Installation For Mac Users
+Instalation For Non-Mac Users
+
+2.Create Our Website
+Create a New App
+Add Our First Pages
+Add Links
+Add Restaurants
+Set The Home Page
+
+3.Get Started With Bootstrap
+Install Bootstrap
+Add a Navigation Bar
+Simplify Our Code
+Build Beautiful Forms
+
+4.Launch Our Site
+Set Up GitHub
+Save Our Progress
+Deploy on Heroku
+
+5.Add Images
+Add the Carrierwave Gem
+Image Hosting With Amazon S3
+Protect Our Passwords
+Resize Images
+
+6.Add Front-End Design
+Create a Custom Banner
+Format the Navbar
+Add Static Images
+
+7.Add Users
+Install Devise
+Insert Conditional Links
+Style Devise Forms
+Customize Alerts And Error Messages
+
+8.Add Reviews(I)
+Build a Review Scaffold
+Link Reviews to Users
+Modify Data with Rails Console
+Remove Unnecessary URLs
+
+9.Add Reviews (II)
+Link Reviews to Restaurants
+Nest Resource URLs
+Display Reviews
+
+10.Add Star Ratings
+Convert Numbers To Stars
+Layer On More Options
+
+11.Set Validations And Permissions
+Add User Fields
+Integrate Names Into Reviews
+Validate Submitted Data
+Set User Permissions
+
+12.Add Bells And Whistles
+Embed Google Maps
+Set Up Search
+Course Summary
+
+
+

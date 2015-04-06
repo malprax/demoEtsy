@@ -138,3 +138,50 @@ nda ada yang mahal kalu nda ada harga pembandingnya
  
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.
+
+
+
+Craigslist Scraper Course Page:
+1.Explore 3taps API
+Introduction
+Using the Reference API
+Retrieve Posting Data
+Refine Our API Request
+
+2.Import Data Into Our App
+Convert Our Request to a Script
+Create a Rake Task
+Save Posts to Database
+
+3.Improve Display of Data
+Clean Up Data Formats
+Paginate the Index Page
+
+4.Gather Detailed Data
+Scrape Apartment Details
+Display Details
+Collect and Store Images
+
+5.Scrape Location Data
+Look Up Meighborhoods
+Display Neighborhoods
+
+6.Add Data Filters
+Build an Advanced Filter
+Improve Filter Display
+Structure Filter Layout
+
+7.Add Front End Styling
+Design Homepage
+Add Thumbnail Images
+Structure Show Page
+Style Show Page
+
+8.Deploy And Automate
+Refresh Our Data
+Deploy On Heroku
+Automate Rake Tasks
+Conclusion
+
+
+

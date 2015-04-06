@@ -2128,16 +2128,569 @@ app/views/posts/index.html.erb
 Let’s save and refresh our search. It looks much better. In the next video, we’ll work on creating a homepage for our app and adding some CSS to put a little polish onto our site.
 
 7.Add Front End Styling
-Design Homepage
-Add Thumbnail Images
-Structure Show Page
-Style Show Page
+Design Homepage:
+Now that we have our functionality and data all set up, let’s work on adding some CSS to spruce up the look of our app.
+
+Our index page has a lot of information, but instead of having this be the first page users see when they visit our site, let’s create a separate homepage with just this filter area as a call-to-action. The best example of this kind of homepage is actually Google, where all that’s displayed is a search bar on a plain background.
+
+To add a new page, we’ll need to do three things. First, we’ll go to our controller file under app/controllers/posts_controller.rb and add a new action. We’ll write:
+
+app/controllers/posts_controller.rb
+…
+def home
+end
+…
+Let’s save. Next, we’ll create a view page to match the new controller-action we just added. Under app/views/posts, let’s create a new file called home.html.erb.
+
+app/views/posts/home.html.erb
+
+Finally, we’ll set up a URL that corresponds to this view page and make it our homepage. In our config/routes.rb file, we’ll write:
+
+config/routes.rb
+Rails.application.routes.draw do
+  resources :posts
+  
+  root 'posts#home'
+  …
+end
+Let’s save and go to localhost:3000. We can see it’s blank, but that’s because we haven’t added any code to the view page yet.
+
+One of the easiest ways to design the homepage is to add a Bootstrap jumbotron. A jumbotron is a container that you can fill with information about your site. It’s also a good way to showcase attention-grabbing content or images.
+
+Let’s go to the Bootstrap website at getbootstrap.com and click on “Components”. On the right, let’s click on the “Jumbotron” section. Here, Bootstrap gives us some sample code to use with an option of having the jumbotron span the full width of our site. Let’s use that option here by copying over the second code block. Going back to our home.html.erb file, let’s paste this in.
+
+app/views/posts/home.html.erb
+<div class="jumbotron">
+  <div class="container">
+   ...
+  </div>
+</div>
+Inside the container, we’ll write some information about our site.
+
+app/views/posts/home.html.erb
+<div class="jumbotron">
+  <div class="container">
+    <h1>Craigslist Scraper</h1>
+    <h2>The easiest way to find apartment rentals in Brooklyn</h2>
+  </div>
+</div>
+Let’s save and see what this looks like. Great, our text is displaying properly within this jumbotron container. Let’s center this text with CSS. We’ll go to Sublime Text and under app/assets/stylesheets, we’ll click on our custom.css.scss file.
+
+I’ll assume you already have a basic understanding of CSS syntax such as classes, IDs, properties, and values, so we’ll create a “center” class by writing:
+
+app/assets/stylesheets/custom.css.scss
+@import "bootstrap-sprockets";
+@import "bootstrap";
+
+.center {
+  text-align: center;
+}
+We’ll save and then we’ll use this class in our home.html.erb file by wrapping our headers inside a <div>.
+
+app/views/posts/home.html.erb
+<div class="jumbotron">
+  <div class="container">
+    <div class="center">
+      <h1>Craigslist Scraper</h1>
+      <h2>The easiest way to find apartment rentals in Brooklyn</h2>
+    </div>
+  </div>
+</div>
+Let’s save and go back to localhost and refresh the page. Looks better. Let’s now add a background image to our jumbotron. I’ve already found a background image I like but you can use whatever image you want. Just make sure the resolution is high and the size is large enough to fill your screen. Beautiful images can really bring a website to life, but finding the right one can take some trial-and-error.
+
+In our custom.css.scss file, we’ll write:
+
+app/assets/stylesheets/custom.css.scss
+@import "bootstrap-sprockets";
+@import "bootstrap";
+
+.center {
+  text-align: center;
+}
+
+.jumbotron {
+  background-image: url({YOUR_IMAGE_URL});
+}
+Let’s save and refresh localhost. We can see that our image isn’t displaying all the way because the default height of the jumbotron is too short. Let’s expand the height to fill our screen, mine is around 800px, but yours could be a little different. In my jumbotron CSS, on the next line, I’ll write:
+
+app/assets/stylesheets/custom.css.scss
+…
+.jumbotron {
+  background-image: url({YOUR_IMAGE_URL});
+  height: 800px;
+}
+Don’t forget that users who view your homepage will potentially have multiple screen sizes so make sure to find an image that will be large enough to fill even a
+desktop-sized monitor if people will be viewing your site live on the web.
+
+Let’s save and take a look. The jumbotron also has a default margin on the bottom that we can get rid of. Since my image is so large, I’d also like to center it so that the interior of the room is more visible.
+
+Back in our CSS file, we’ll write:
+
+app/assets/stylesheets/custom.css.scss
+…
+.jumbotron {
+  background-image: url({YOUR_IMAGE_URL});
+  height: 800px;
+  margin: 0px;
+  background-position: center;
+}
+Let’s save and check it out. It’s looking much better! With our background image in place, let’s format this header text font so it looks more fancy.
+
+Inside our .jumbotron class, we’ll write:
+
+app/assets/stylesheets/custom.css.scss
+…
+.jumbotron {
+  background-image: url({YOUR_IMAGE_URL});
+  height: 800px;
+  margin: 0px;
+  background-position: center;
+  h1 {
+    text-transform: uppercase;
+    color: #fff;
+    text-shadow: 0px 2px 3px #555;
+  }
+  h2 {
+    color: #fff;
+    text-shadow: 0px 2px 3px #555;
+  }
+}
+Here, we’re using a text-shadow to give our text a letterpress effect so it looks more 3D and is easier to read against the background image. Let’s save and go see.
+
+Looks great! We’re now ready to add our filter section underneath this text. Let’s go to Sublime Text and open our app/views/posts/index.html.erb page where the code for our filter is located. We could copy over this code, but since our file is getting pretty long and to avoid having to keep both filters up-to-date, I’d rather move it to a common location.
+
+To do this, we’ll place it in a partial, so let’s create a new file in our app/views/posts folder and call it ___filter.html.erb__. Then we’ll cut out everything starting with this <div class="filter"> and paste it into our partial.
+
+app/views/posts/_filter.html.erb
+<div class="filter">
+  <%= form_tag posts_path, method: :get, class: "form-inline" do %>
+  
+    <div class="row">
+      <div class="col-md-4">
+        <%= label_tag "Price" %>
+      </div>
+      <div class="col-md-2">
+        <%= label_tag :bedrooms %>
+      </div>
+      <div class="col-md-2">
+        <%= label_tag :bathrooms %>
+      </div>
+      <div class="col-md-4">
+        <%= label_tag :neighborhood %>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-4">
+        <%= text_field_tag :min_price, params[:min_price], placeholder: "minimum", class: "form-control input-sm" %>
+        <%= text_field_tag :max_price, params[:max_price], placeholder: "maximum", class: "form-control input-sm" %>
+      </div>
+      <div class="col-md-2">
+        <%= text_field_tag :bedrooms, params[:bedrooms], placeholder: "# of beds", class: "form-control input-sm" %>
+      </div>
+      <div class="col-md-2">
+        <%= text_field_tag :bathrooms, params[:bathrooms], placeholder: "# of baths", class: "form-control input-sm" %>
+      </div>
+      <div class="col-md-4">
+        <%= select_tag(:neighborhood, options_from_collection_for_select(Location.all, :name, :name, params[:neighborhood]), { include_blank: true, class: "form-control input-sm" }) %>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-4">
+        <%= label_tag "Square Footage" %>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-4">
+        <%= text_field_tag :min_sqft, params[:min_sqft], placeholder: "minimum", class: "form-control input-sm" %>
+        <%= text_field_tag :max_sqft, params[:max_sqft], placeholder: "maximum", class: "form-control input-sm" %>
+      </div>
+      <div class="col-md-1">
+        <%= label_tag :cats %>
+        <%= check_box_tag :cats, "YES", params[:cats] %>
+      </div>
+      <div class="col-md-1">
+        <%= label_tag :dogs %>
+        <%= check_box_tag :dogs, "YES", params[:dogs] %>
+      </div>
+      <div class="col-md-2">
+        <%= label_tag "Washer/dryer in unit" %>
+        <%= check_box_tag :w_d_in_unit, "YES", params[:w_d_in_unit] %>
+      </div>
+      <div class="col-md-2">
+        <%= label_tag :street_parking %>
+        <%= check_box_tag :street_parking, "YES", params[:street_parking] %>
+      </div>
+      <div class="col-md-2">
+        <%= submit_tag "Search", name: nil, class: "btn btn-primary" %>
+      </div>
+    </div>  
+
+  <% end %>
+</div>
+Let’s save this, and now we call the partial with <%= render 'filter' %>.
+
+app/views/posts/index.html.erb
+<div class="container">
+  
+  <%= render 'filter' %>
+
+  …
+Let’s save this and add it to our homepage code as well, and we’ll save.
+
+app/views/posts/home.html.erb
+<div class="jumbotron">
+  <div class="container">
+    <div class="center">
+      <h1>Craigslist Scraper</h1>
+      <h2>The easiest way to find apartment rentals in Brooklyn</h2>
+    </div>
+    
+    <%= render 'filter' %>
+  </div>
+</div>
+Let’s check it out in our browser. Not so good, it’s a little hard to read. Let’s add a solid background color so that we can differentiate this section from the rest of the page.
+
+Back in our CSS file, let’s write
+
+app/assets/stylesheets/custom.css.scss
+…
+.filter {
+  background-color: rgba(215,226,241,0.9);
+}
+RGBA stands for red, green, blue, alpha. The 215, 226, and 241 correspond to the amount of those primary colors that are mixed together to make the specific color that we want. The alpha is a way to set the opacity, with 1 being completely opaque and 0 being completely transparent. Here, our background color will be slightly transparent.
+
+Let’s save and go see what it looks like. It’s much easier to read now, but the spacing is cramped inside the filter and it’s too close to the H2 heading. Let’s take care of that now. We’ll add some padding inside our filter <div> and make the borders round.
+
+app/assets/stylesheets/custom.css.scss
+…
+.filter {
+  background-color: rgba(215,226,241,0.9);
+  padding: 20px 30px 10px 30px;
+  border-radius: 10px;
+}
+And under h2, we’ll add:
+
+app/assets/stylesheets/custom.css.scss
+…
+.jumbotron {
+  background-image: url({YOUR_IMAGE_URL});
+  height: 800px;
+  margin: 0px;
+  background-position: center;
+  h1 {
+    text-transform: uppercase;
+    color: #fff;
+    text-shadow: 0px 2px 3px #555;
+  }
+  h2 {
+    color: #fff;
+    text-shadow: 0px 2px 3px #555;
+    margin-bottom: 80px;
+  }
+}
+…
+Let’s save and take a look. Much better. Finally, all this content here looks a little high on the page, so we’ll add some padding to our overall container on the top and bottom to push the content toward the center of our screen.
+
+Inside our .jumbotron class, we’ll add a .container class and write
+
+app/assets/stylesheets/custom.css.scss
+…
+.jumbotron {
+  background-image: url({YOUR_IMAGE_URL});
+  height: 800px;
+  margin: 0px;
+  background-position: center;
+  h1 {
+    text-transform: uppercase;
+    color: #fff;
+    text-shadow: 0px 2px 3px #555;
+  }
+  h2 {
+    color: #fff;
+    text-shadow: 0px 2px 3px #555;
+    margin-bottom: 80px;
+  }
+  .container {
+    padding: 80px 0px;
+  }
+}
+…
+This is adding 80 pixels worth of padding to the top and bottom of our container and 0px to the left and right of our container. Because this CSS is nested inside the .jumbotron selector, it’ll only apply to the container within the jumbotron. Any other containers won’t be affected.
+
+Let’s save and take a look. Great, this is really the minimalist homepage look that we’re going for. We have a strong call-to-action and users will be able to search for their apartment rentals immediately.
+
+Keep in mind that all the changes we just made usually require lots of trial-and-error, but to save time, I’ve already figured out the optimal settings to use. When you do this for your own site, you’ll need to play around with different values to find ones that you’re satisfied with.
+
+To recap, in this video, we created and styled our new homepage with some CSS, Bootstrap, and a custom image. In the next video, we’ll continue to improve the look and feel of our site by styling our index page.
+
+Add Thumbnail Images:
+In the last video, we created a homepage for users to browse apartment rentals in Brooklyn. In this video, we’ll continue adding some front-end design to our app by formatting the index page.
+
+Let’s click “Search” to go to our index page. This doesn’t look bad, but let’s fix some small formatting issues. We’ll add a margin on top so the filter isn’t glued to the top of the page. We’ll also add a different background color since the white here looks a little plain.
+
+We’ll open our custom.css.scss file under app/assets/stylesheets. Inside our .filter section, we’ll add:
+
+app/assets/stylesheets/custom.css.scss
+…
+.filter {
+  background-color: rgba(215,226,241,0.9);
+  padding: 20px 30px 10px 30px;
+  border-radius: 10px;
+  margin-top: 30px;
+}
+Then, to add a default background color for our body, we’ll write:
+
+app/assets/stylesheets/custom.css.scss
+@import "bootstrap-sprockets";
+@import "bootstrap";
+
+body {
+  background-color: #f4f7fb;
+}
+…
+This will become the default background color for all our future pages so we can have a consistent look and color palette throughout our site.
+
+Let’s save and check it out. That’s much better. I’m choosing to use this specific color, but you can play around with the background color until you find something you like.
+
+Now if we hover over each post, we can see that the row automatically changes to this peach color because of Bootstrap’s default settings, but let’s change it so it’s more consistent with our color palette.
+
+One cool way to do this is to take whatever color your background is, in our case, it’s this #f4f7fb, and find similar shades in this color family. I like to use a site called colorhexa.com. In their search field, we’ll type in #f4f7fb. If we scroll down, we can find different tint for our initial color along with their corresponding hex codes.
+
+Let’s go two shades darker and use this #d7e2f1 for our hover color. Back in our code, let’s write:
+
+app/assets/stylesheets/custom.css.scss
+…
+.table-hover tbody tr:hover {
+  background-color: #d7e2f1;
+}
+Here, we’re selecting the <tr> nested inside <tbody> that’s itself nested inside our table-hover class. The :hover at the end means to activate this style only when a user is hovering over a table row.
+
+Let’s save and take a look. Now if we hover over each row, we can see it’s 2 shades darker than our background image, which is what we wanted.
+
+The final thing we’ll do is add a column to our table with thumbnail images of each apartment. That way, users can get a preview of what each apartment looks like before they click to go to the Show page.
+
+We’ll go to our view page under app/views/posts/index.html.erb and we’ll create a new column heading in our table by adding <th>Preview</th>.
+
+app/views/posts/index.html.erb
+…
+<thead>
+  <tr>
+    <th>Preview</th>
+    <th>Heading</th>
+    <th>Price</th>
+    <th>Beds</th>
+    <th>Baths</th>
+    <th>Neighborhood</th>
+    <th>Last Updated</th>
+  </tr>
+</thead>
+…
+Then we’ll choose the first image from each Craigslist post to display. We’ll write:
+
+app/views/posts/index.html.erb
+…
+<tbody>
+  <% @posts.each do |post| %>
+    <tr>
+      <td>
+        <%= image_tag post.images.first.url, class: "thumbnail" %>
+      </td>
+      …
+Here, post.images finds all the images that belong to this specific post, .first chooses the first one, and .url gives us the value in the ‘url’ column in our database. Finally, we’re adding Bootstrap’s thumbnail class at the end. Let’s save and see what happens.
+
+Okay, we get an error here. It says “NoMethodError…undefined method `url’”. This is the same error we saw in a previous video and it means that our .url method couldn’t work because it’s being used on something that’s nil. If we look back at our code, we’ll see that .url is being called on post.images.first. This would only be nil if our Craigslist post happens to have zero images.
+
+To fix this, let’s use an ‘if else statement’ to handle both cases. We’ll write:
+
+app/views/posts/index.html.erb
+…
+<tbody>
+  <% @posts.each do |post| %>
+    <tr>
+      <td>
+        <% if post.images.empty? %>
+          <%#= TO DO %>
+        <% else %>
+          <%= image_tag post.images.first.url, class: "thumbnail" %>
+        <% end %>
+      </td>
+      …
+When our Craigslist post has images available, then we’ll display the first one as usual. As for what we’ll do when there aren’t any images available, let’s use a default image instead. I’ve already found one online, so I’ll copy the link, and then write:
+
+app/views/posts/index.html.erb
+…
+<tbody>
+  <% @posts.each do |post| %>
+    <tr>
+      <td>
+        <% if post.images.empty? %>
+          <%= image_tag "{YOUR_DEFAULT_IMAGE}", class: "thumbnail" %>
+        <% else %>
+          <%= image_tag post.images.first.url, class: "thumbnail" %>
+        <% end %>
+      </td>
+      …
+Let’s save and go check it out. Well at least the images are now appearing. But these photos are bleeding out of their columns because the sizes of the actual images are so large. If we were hosting these images ourselves, we could use the paperclip or carrierwave gems to resize them. But they’re all stored online at different URLs, so unless we want to download them all and host them ourselves, this won’t be possible.
+
+Instead, we’ll use a CSS workaround to solve this. We’ll go to our stylesheet and write:
+
+app/assets/stylesheets/custom.css.scss
+…
+tbody {
+  .thumbnail {
+    width: 100%;
+    height: 100%;
+  }
+}
+The width and height set to 100% just means to resize the image to fit the width and height of its container, that way it won’t overflow out. Know that this CSS won’t preserve the aspect ratio of our images, but since we’ll only be seeing a thumbnail anyway, it won’t be nearly as noticeable as if it were a high-resolution, full-sized image. And like before, this CSS code only affects the thumbnail class that’s nested within our <tbody>.
+
+Let’s save and refresh localhost. It’s much better, but the width and height are still much too big. Let’s write some inline CSS to style just this one table column.
+
+In our index.html.erb, we’ll add a width="13%" and height="120px" for this column.
+
+app/views/posts/index.html.erb
+…
+<tbody>
+  <% @posts.each do |post| %>
+    <tr>
+      <td width="13%" height="120px">
+        …
+In case you haven’t seen inline CSS before, it’s equivalent to going to our stylesheet and adding the CSS there. But sometimes we won’t need to reuse the CSS code, so this is an easy way to style a single HTML element without having to create a new class for it and adding it to our CSS stylesheet. This shortcut can be really handy for situations like these where we just want to style this one <td> tag.
+
+Let’s save and take a look. Great, now it looks like a real thumbnail. You can play around with your dimensions here if you like. Try adjusting the width and height, either by % or by the number of pixels until you’re happy with the result.
+
+There’s a margin underneath all the thumbnails here so let’s get quickly get rid of that by going to our stylesheet and adding margin-bottom: 0px;.
+
+app/assets/stylesheets/custom.css.scss
+…
+tbody {
+  .thumbnail {
+    width: 100%;
+    height: 100%;
+    margin-bottom: 0px;
+  }
+}
+Let’s save and refresh. Good, the margin is gone.
+
+One more improvement we can make to this column is to change our thumbnail into a link to the Show page. The header is already a link, but I think it’s more intuitive for some people to use the image to get to the Show page as well. We’ll go to our view page and wrap our ‘if else statement’ with <%= link_to post_path(post) do %>. We’ll tab all this in and put an <% end %> at the bottom.
+
+app/views/posts/index.html.erb
+…
+<tbody>
+  <% @posts.each do |post| %>
+    <tr>
+      <td>
+        <%= link_to post_path(post) do %>
+          <% if post.images.empty? %>
+            <%= image_tag "{YOUR_DEFAULT_IMAGE}", class: "thumbnail" %>
+          <% else %>
+            <%= image_tag post.images.first.url, class: "thumbnail" %>
+          <% end %>
+        <% end %>
+      </td>
+      …
+Now the entire thumbnail becomes a link to our Show page. Let’s save and go take a look. If we click on the image, we’re taken to the Show page. It works.
+
+Our table is almost done. Let’s write some last few lines of inline CSS so we can align the content in the middle of our columns.
+
+We’ll use the center CSS class that we set up previously for all our <th> tags so that our titles are centered within their columns.
+
+app/views/posts/index.html.erb
+…
+<thead>
+  <tr>
+    <th class="center">Preview</th>
+    <th>Heading</th>
+    <th>Price</th>
+    <th>Beds</th>
+    <th>Baths</th>
+    <th>Neighborhood</th>
+    <th>Last Updated</th>
+  </tr>
+</thead>
+…
+Let’s copy this and add it to our other <th> tags as well.
+
+app/views/posts/index.html.erb
+…
+<thead>
+  <tr>
+    <th class="center">Preview</th>
+    <th class="center">Heading</th>
+    <th class="center">Neighborhood</th>
+    <th class="center">Beds</th>
+    <th class="center">Baths</th>
+    <th class="center">Price</th>
+    <th class="center">Last Updated</th>
+  </tr>
+</thead>
+…
+Let’s also add a width="45%" to our <th> tag for the Post’s heading text. This will set the width of the column to prevent it from taking up too much space.
+
+app/views/posts/index.html.erb
+…
+<thead>
+  <tr>
+    <th class="center">Preview</th>
+    <th class="center" width="45%">Heading</th>
+    …
+Let’s save and see how that looks.
+
+Great. Now let’s align the actual data in the table. We’ll keep the Post’s heading text as left-aligned and center the others. We’ll also want to vertically center everything. Let’s go to our code and add a class="center" to all the <td> tags after post.heading.
+
+app/views/posts/index.html.erb
+…
+<tbody>
+  <% @posts.each do |post| %>
+    <tr>
+      …
+      <td><%= link_to post.heading, post %></td>
+      <td class="center"><%= number_to_currency(post.price, precision: 0) %></td>
+      <td class="center"><%= post.bedrooms %></td>
+      <td class="center"><%= post.bathrooms %></td>
+      <td class="center"><%= post.neighborhood %></td>
+      <td class="center"><%= "#{time_ago_in_words(Time.at(post.timestamp.to_i))} ago" %></td>
+      …
+Then, we’ll add a style="vertical-align:middle" to all of them, including the Post’s heading.
+
+app/views/posts/index.html.erb
+…
+<tbody>
+  <% @posts.each do |post| %>
+    <tr>
+      …
+      <td style="vertical-align:middle"><%= link_to post.heading, post %></td>
+      <td class="center" style="vertical-align:middle"><%= number_to_currency(post.price, precision: 0) %></td>
+      <td class="center" style="vertical-align:middle"><%= post.bedrooms %></td>
+      <td class="center" style="vertical-align:middle"><%= post.bathrooms %></td>
+      <td class="center" style="vertical-align:middle"><%= post.neighborhood %></td>
+      <td class="center" style="vertical-align:middle"><%= "#{time_ago_in_words(Time.at(post.timestamp.to_i))} ago" %></td>
+      …
+Let’s save and take a look. Much better.
+
+We did a lot in this video. We added a new column to our table with a thumbnail image of each apartment. We also set up a default image to display in case there weren’t any and then we converted all the thumbnails into links. We also styled the content inside our table with some inline CSS. In the next video, we’ll move on from the index page and add some styling to our Show page.
+
+Structure Show Page:
+Coming soon!
+
+Style Show Page:
+Coming soon!
 
 8.Deploy And Automate
-Refresh Our Data
-Deploy On Heroku
-Automate Rake Tasks
-Conclusion
+Refresh Our Data:
+Coming soon!
+
+Deploy On Heroku:
+Coming soon!
+
+Automate Rake Tasks:
+Coming soon!
+
+Conclusion:
+Coming soon!
 
 
 

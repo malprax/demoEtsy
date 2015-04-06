@@ -867,18 +867,1265 @@ Our index page is now looking pretty good, with nice formatting and Bootstrap-st
 
 
 4.Gather Detailed Data
-Scrape Apartment Details
-Display Details
-Collect and Store Images
+Scrape Apartment Details:
+In the last few videos, we created our web app, loaded it with Craigslist data that we got from 3taps, and added some basic styling to our index page to allow our app to look presentable. This time, we’ll go back and take a second look at our 3taps data to see if we can pull some extra details.
+
+If we look at any apartment listing on Craigslist, we’ll see that there are these tags on the right side. These tags show details like the number of bedrooms and bathrooms, when the apartment will be available, and whether cats or dogs are allowed. But these tags vary from post to post. They’re all optional, so some listings will be more complete than others.
+
+Let’s see if we can access these details through 3taps. We’ll go back to our rake task under lib/tasks/scraper.rake. If we run this task as-is, it’s going to store another 1,000 posts into our database. So since we just want to explore around, let’s comment out this whole section. Then we’ll replace this line with puts JSON.pretty_generate result["postings"], which will display all the posting data onto the screen.
+
+lib/tasks/scraper.rake
+…
+# Display results to screen
+puts JSON.pretty_generate result["postings"]
+
+# # Store results in database
+# result["postings"].each do |posting|
+
+#   # Create new Post
+#   @post = Post.new
+#   @post.heading = posting["heading"]
+#   @post.body = posting["body"]
+#   @post.price = posting["price"]
+#   @post.neighborhood = posting["location"]["locality"]
+#   @post.external_url = posting["external_url"]
+#   @post.timestamp = posting["timestamp"]
+
+#    # Save Post
+#    @post.save
+…
+Let’s save and run this with rake scraper:scrape.
+
+Command Line
+$ rake scraper:scrape
+Okay, let’s take a look at some of these. It looks like most of the tag data is stored in this field called annotations. This specific listing has information on the number of bathrooms, the number of bedrooms, the neighborhood name, a link to a Google map of the address, the date the apartment will be available, whether cats or dogs are allowed, and even the phone number and IP address of the person who posted it.
+
+Let’s look at a different post. This one seems to have a bunch of the same fields. The format of the bathrooms (“1ba”) and bedrooms (“0br”) seems to be consistent (“2ba”, “2br”). The source_neighborhood seems to be user-inputted with lowercase ‘bedstuy’ here and all caps ‘BEDSTUY / CROWN HEIGHTS’ here, so it’s good that we took our neighborhood information directly from 3taps’s location field as it’ll already be standardized.
+
+What else? The values for cats and dogs seem to be consistent as well. They both have “YES” in all caps up here and down here.
+
+Let’s choose a few of these fields to add as columns in our database. We’ll pick bedrooms, bathrooms, cats, dogs, and I’ll also throw in a few more fields, sqft and two more that seem to be pretty common in Brooklyn. One is a field called w_d_in_unit, which tells whether a washer and dryer are available in the apartment, and another is called street_parking, which tells us whether street parking is available outside the building.
+
+Let’s generate a migration to add these extra fields to our Post database. We’ll write rails generate migration AddFieldsToPosts bedrooms:integer bathrooms:decimal sqft:integer cats dogs w_d_in_unit street_parking.
+
+Command Line
+$ rails generate migration AddFieldsToPosts bedrooms:integer bathrooms:decimal sqft:integer cats dogs w_d_in_unit street_parking
+There are a couple points I should note here. First, bathrooms is a decimal because an apartment can have a half bath without a shower. Second, you’ll notice that the 3taps bathrooms and bedrooms values don’t just have a number, like 2 or 3. Instead, they’ll say ‘2ba’ or ‘3br’. But if we tell our app to save something like ‘2ba’ as an integer, it’ll ignore everything after the ‘2’ and save it as just the number ‘2’. So this little shortcut makes our life easier when it comes to formatting data.
+
+Let’s hit Enter and then run rake db:migrate to add these new columns to our Post database.
+
+Command Line
+$ rake db:migrate
+We’ll also restart our Rails server.
+
+Command Line
+$ rails s
+We want to repopulate our database with all the columns this time, so let’s clear the old data out first. We could do this through the Rails console, but we might need to do it again later on, so let’s write a quick rake task.
+
+In our scraper.rake file, we’ll go to the bottom and fill in the section for the destroy_all_posts task we created earlier. As the description, let’s write “Destroy all posting data” and for the actual task, we’ll write the following:
+
+lib/tasks/scraper.rake
+desc "Destroy all posting data"
+task destroy_all_posts: :environment do
+  Post.destroy_all
+end
+This destroy_all method destroys all the objects in our Post database. Let’s save and run it with rake scraper:destroy_all_posts.
+
+Command Line
+$ rake scraper:destroy_all_posts
+Now when we refresh our localhost page, we’ll see it’s empty.
+
+With our database emptied, let’s go back to our scrape task and figure out the code we need to write to access these new fields. It should pretty similar to the code we wrote to grab the neighborhood. In that situation, we wrote posting["location"] to get the location hash and then ["locality"] to get the value from within the hash.
+
+Let’s try grabbing the bedrooms field. We’ll grab a single posting using puts result["postings"].first, and then we’ll tack on a ["annotations"] to get the annotations hash and then ["bedrooms"] to get the bedrooms field.
+
+lib/tasks/scraper.rake
+…
+# Display results to screen
+puts result["postings"].first["annotations"]["bedrooms"]
+…
+Let’s save and run this with rake scraper:scrape.
+
+Command Line
+$ rake scraper:scrape
+Good, we got it. There’s one problem though – this won’t work in situations where the bedrooms field is missing. For example, we can comment out this current line and look at the annotations hash of the first posting with puts JSON.pretty_generate result["postings"].first["annotations"].
+
+lib/tasks/scraper.rake
+…
+# Display results to screen
+# puts result["postings"].first["annotations"]["bedrooms"]
+puts JSON.pretty_generate result["postings"].first["annotations"]
+…
+I’ll save and re-run this.
+
+Command Line
+$ rake scraper:scrape
+You can see that this posting lacks the sqft field, for example. So if we delete this line and run the same code as before but with sqft instead of bedrooms, let’s see what happens.
+
+lib/tasks/scraper.rake
+…
+# Display results to screen
+puts result["postings"].first["annotations"]["sqft"]
+…
+Command Line
+$ rake scraper:scrape
+We got a blank line. In other words, our rake task couldn’t find the sqft field and so it returned nil. This could be a problem because we’ve told our database that the sqft column should be an integer so when it sees nil, rather than leave our column blank, it’s going to put in 0 as the square footage.
+
+To avoid this situation, we’ll have to first check whether the field exists. We’ll go back to our code, comment out the line where we display results to the screen, and uncomment out the section where we store our results in the database. After we set the post’s timestamp, let’s write:
+
+lib/tasks/scraper.rake
+…
+# Display results to screen
+# puts result["postings"].first["annotations"]["sqft"]
+
+# Store results in database
+result["postings"].each do |posting|
+
+  # Create new Post
+  @post = Post.new
+  @post.heading = posting["heading"]
+  @post.body = posting["body"]
+  @post.price = posting["price"]
+  @post.neighborhood = posting["location"]["locality"]
+  @post.external_url = posting["external_url"]
+  @post.timestamp = posting["timestamp"]
+
+  if posting["annotations"]["bedrooms"].present?
+    @post.bedrooms = posting["annotations"]["bedrooms"]
+  end
+
+  # Save Post
+  @post.save
+…
+This is saying that if the bedrooms field exists, then save it to the bedrooms column of our database. We can even simplify this into a one-liner by moving the ‘if statement’ and deleting the end.
+
+lib/tasks/scraper.rake
+…
+@post.bedrooms = posting["annotations"]["bedrooms"] if posting["annotations"]["bedrooms"].present?
+…
+Let’s do this same thing for each one of our new fields.
+
+lib/tasks/scraper.rake
+…
+# Display results to screen
+# puts result["postings"].first["annotations"]["sqft"]
+
+# Store results in database
+result["postings"].each do |posting|
+
+  # Create new Post
+  @post = Post.new
+  @post.heading = posting["heading"]
+  @post.body = posting["body"]
+  @post.price = posting["price"]
+  @post.neighborhood = posting["location"]["locality"]
+  @post.external_url = posting["external_url"]
+  @post.timestamp = posting["timestamp"]
+  @post.bedrooms = posting["annotations"]["bedrooms"] if posting["annotations"]["bedrooms"].present?
+  @post.bathrooms = posting["annotations"]["bathrooms"] if posting["annotations"]["bathrooms"].present?
+  @post.sqft = posting["annotations"]["sqft"] if posting["annotations"]["sqft"].present?
+  @post.cats = posting["annotations"]["cats"] if posting["annotations"]["cats"].present?
+  @post.dogs = posting["annotations"]["dogs"] if posting["annotations"]["dogs"].present?
+  @post.w_d_in_unit = posting["annotations"]["w_d_in_unit"] if posting["annotations"]["w_d_in_unit"].present?
+  @post.street_parking = posting["annotations"]["street_parking"] if posting["annotations"]["street_parking"].present?
+
+  # Save Post
+  @post.save
+…
+Okay, let’s save and try running this.
+
+Command Line
+$ rake scraper:scrape
+To see if it worked, I’m going to use a tool called SQLite Database Browser. You can download it by searching ‘SQLite Database Browser’, clicking the sourceforge link, and hitting ‘Download’. Once it’s installed, open it up, click on the ‘Open Database’ link on top, navigate to your ‘craigslist_scraper’ app directory, click on ‘db’ and double-click ‘development.sqlite3’. Make sure you’re in the ‘Browse Data’ tab and looking at the ‘posts’ table.
+
+Scrolling to the right, we can see the new fields we’ve added and the good news is that most of them seem to be filled in. The majority of our posts have bedrooms and bathrooms filled in, along with cats and dogs, while sqft, w_d_in_unit, and street_parking are only available for a portion of our apartments.
+
+With our new data fields added, it’s time to update our index and show pages with this new information in the next video.
+
+Display Details:
+Now that we’ve correctly populated our database with these new fields, let’s display this information on our app’s pages as well.
+
+Let’s open up our Sublime Text and we’ll go to our view page code under app/views/posts/index.html.erb and add a couple new column headings:
+
+app/views/posts/index.html.erb
+<div class="container">
+  <table class="table table-hover table-condensed">
+    <thead>
+     <tr>
+       <th>Heading</th>
+       <th>Price</th>
+       <th>Beds</th>
+       <th>Baths</th>
+       <th>Neighborhood</th>
+       <th>Last Updated</th>
+     </tr>
+    </thead>
+    …
+We’ll also add the data values below. After the line for ‘Price’, we’ll write:
+
+app/views/posts/index.html.erb
+<tbody>
+  <% @posts.each do |post| %>
+    <tr>
+      <td><%= link_to post.heading, post %></td>
+      <td><%= number_to_currency(post.price, precision: 0) %></td>
+      <td><%= post.bedrooms %></td>
+      <td><%= post.bathrooms %></td>
+      …
+Let’s save and see how it looks. Great!
+
+Now for our Show page, we haven’t done any styling here yet, but I want to at least have the new data be displayed here so we’ll be ready when we need to format it later on. Let’s go to our code under app/views/posts/show.html.erb and below ‘Timestamp’, we’ll write:
+
+app/views/posts/show.html.erb
+…
+<p>
+  <strong>Timestamp:</strong>
+  <%= @post.timestamp %>
+</p>
+
+<p>
+  Bedrooms: <%= @post.bedrooms %>
+</p>
+
+<p>
+  Bathrooms: <%= @post.bathrooms %>
+</p>
+
+<p>
+  Square Footage: <%= @post.sqft %>
+</p>
+
+<p>
+  Cats allowed: <%= @post.cats %>
+</p>
+
+<p>
+  Dogs allowed: <%= @post.dogs %>
+</p>
+
+<p>
+  Washer/dryer in unit: <%= @post.w_d_in_unit %>
+</p>
+
+<p>
+  Street parking: <%= @post.street_parking %>
+</p>
+…
+Let’s save and refresh our Show page. It’s neither pretty nor consistent, but at least the information is all here. While we’re here on the Show page, let’s also put this into a “container” class.
+
+app/views/posts/show.html.erb
+<p id="notice"><%= notice %></p>
+
+<div class="container">
+  <p>
+    <strong>Timestamp:</strong>
+    <%= @post.timestamp %>
+  </p>
+  ...
+  <%= link_to 'Edit', edit_post_path(@post) %> | 
+  <%= link_to 'Back', posts_path %>
+</div>
+We’ll save and refresh.
+
+We now have a lot more data on each listing, from the price to the location, even on whether cats or dogs are allowed. In the next video, we’ll work on grabbing and displaying the last set of data we need, the images uploaded with each post.
+
+Collect and Store Images:
+We’ve now grabbed most of the relevant information on our Craigslist posts, but we’re still missing one very important thing: images.
+
+We saw in an earlier video that 3taps gives us a list of URLs containing the images that were uploaded with the post. What we’ll do this time is grab those images and store them in our database.
+
+Normally, when we want to attach images to a resource like our posts, we would use a file attachment gem like paperclip or carrierwave. This situation is different because we no longer need to attach an actual file – we can simply store the URL as a string instead.
+
+Since each post can have multiple images, it’s best to create a new database for these image URLs that’s linked to our database of Posts. This is a has_many/belongs_to relationship, where a Post has many Images, and an Image belongs to a specific Post.
+
+We’ll go to our command line and we could write rails generate model Image url:text, which would create an Image table for us with a single column, url. Notice that we’re storing the URL as text instead of string because strings max out at 256 characters and URLs for images could be very long, whereas URLs for Craigslist are standardized. After running this command, we’d then have to create another migration to add a post_id column which tells us which Post an Image belongs to.
+
+But there’s a shortcut we can use to do it all in a single command. At the end of this, we’ll add a post:references. This will automatically create the post_id column for us. Let’s hit Enter, run rake db:migrate, and restart our Rails server.
+
+Command Line
+$ rails generate model Image url:text post:references
+$ rake db:migrate
+Command Line
+$ rails s
+Now that our database columns have been created, we need to go to our model files and set up the has_many/belongs_to relationship. If we open our app/models/image.rb file, we’ll see that the belongs_to side has already been done for us, so let’s open post.rb and write has_many :images. We’ll also add , dependent: :destroy, which will cause an Image to be deleted when the Post it belongs to is destroyed.
+
+app/models/post.rb
+class Post < ActiveRecord::Base
+  has_many :images, dependent: :destroy
+end
+Let’s save that. If we want, we can open up our SQLite Database Browser, navigate to our app’s database, go to ‘Browse Data’, and look at our new Images table. Here are the url and post_id columns that we created. We now want to populate this table and have many image URLs in this column, all tied to an ID here that corresponds to an ID from our table of Posts.
+
+To do this, we’ll open up our rake task under lib/tasks/scraper.rake. Like last time, let’s comment out the section where we save to our database so we can figure out the right syntax to use to grab the image URLs. We’ll then uncomment this line and write puts JSON.pretty_generate result["postings"].first["images"] which will grab the images hash that we want.
+
+lib/tasks/scraper.rake
+  …
+  # Display results to screen
+  puts JSON.pretty_generate result["postings"].first["images"]
+
+  # # Store results in database
+  # result["postings"].each do |posting|
+
+  #   # Create new Post
+  #   @post = Post.new
+  #   @post.heading = posting["heading"]
+  #   @post.body = posting["body"]
+  #   @post.price = posting["price"]
+  #   @post.neighborhood = posting["location"]["locality"]
+  #   @post.external_url = posting["external_url"]
+  #   @post.timestamp = posting["timestamp"]
+  #   @post.bedrooms = posting["annotations"]["bedrooms"] if posting["annotations"]["bedrooms"].present?
+  #   @post.bathrooms = posting["annotations"]["bathrooms"] if posting["annotations"]["bathrooms"].present?
+  #   @post.sqft = posting["annotations"]["sqft"] if posting["annotations"]["sqft"].present?
+  #   @post.cats = posting["annotations"]["cats"] if posting["annotations"]["cats"].present?
+  #   @post.dogs = posting["annotations"]["dogs"] if posting["annotations"]["dogs"].present?
+  #   @post.w_d_in_unit = posting["annotations"]["w_d_in_unit"] if posting["annotations"]["w_d_in_unit"].present?
+  #   @post.street_parking = posting["annotations"]["street_parking"] if posting["annotations"]["street_parking"].present?
+
+  #   # Save Post
+  #   @post.save
+  # end
+end
+…
+
+Let’s save and run this with rake scraper:scrape.
+
+Command Line
+$ rake scraper:scrape
+Ok, so to grab just this URL, we’ll look at the first image and take the name that corresponds to “full”. In our code, we’ll add .first["full"], but since the result won’t be a hash anymore, we’ll need to delete the JSON.pretty_generate.
+
+lib/tasks/scraper.rake
+…
+# Display results to screen
+puts result["postings"].first["images"].first["full"]
+…
+Let’s save, and run this again.
+
+Command Line
+$ rake scraper:scrape
+Good – that’s the URL we wanted. Let’s see if we can get this to save to our database. We’ll comment out this line of code and uncomment the section where we save to our database.
+
+lib/tasks/scraper.rake
+  …
+  # Display results to screen
+  # puts result["posting"].first["images"].first["full"]
+
+  # Store results in database
+  result["postings"].each do |posting|
+
+    # Create new Post
+    @post = Post.new
+    @post.heading = posting["heading"]
+    @post.body = posting["body"]
+    @post.price = posting["price"]
+    @post.neighborhood = posting["location"]["locality"]
+    @post.external_url = posting["external_url"]
+    @post.timestamp = posting["timestamp"]
+    @post.bedrooms = posting["annotations"]["bedrooms"] if posting["annotations"]["bedrooms"].present?
+    @post.bathrooms = posting["annotations"]["bathrooms"] if posting["annotations"]["bathrooms"].present?
+    @post.sqft = posting["annotations"]["sqft"] if posting["annotations"]["sqft"].present?
+    @post.cats = posting["annotations"]["cats"] if posting["annotations"]["cats"].present?
+    @post.dogs = posting["annotations"]["dogs"] if posting["annotations"]["dogs"].present?
+    @post.w_d_in_unit = posting["annotations"]["w_d_in_unit"] if posting["annotations"]["w_d_in_unit"].present?
+    @post.street_parking = posting["annotations"]["street_parking"] if posting["annotations"]["street_parking"].present?
+
+    # Save Post
+    @post.save
+  end
+end
+The image URLs won’t be going in the database of Posts, so after ‘@post.save’, we’ll write:
+
+lib/tasks/scraper.rake
+    …
+    # Save Post
+    @post.save
+
+    # Loop over images and save to Image database
+    posting["images"].each do |image|
+      @image = Image.new
+      @image.url = image["full"]
+      @image.post_id = @post.id 
+      @image.save
+    end  
+  end
+end
+The code we just wrote is looping over the images hash of a post and for each of those URLs, it’s creating a new row in our Image database where we’re grabbing the URL and putting it in the url column. Then we’re taking the ID of the Post we just saved above and we’re putting that in the post_id column. Let’s save.
+
+Before we run this, we’ll need to clear out our database of Posts again. Otherwise, we’re going to get repeats of the same 1,000 posts that are there already. To do that, we’ll run rake scraper:destroy_all_posts.
+
+Command Line
+$ rake scraper:destroy_all_posts
+Now we’ll run rake scraper:scrape to populate our Post and Image databases.
+
+Command Line
+$ rake scraper:scrape
+It takes a while to finish, but once it’s done, let’s look in our database to see if it worked. In our Images table, we can see we now have thousands of image URLs, each linked to a specific Post ID. That’s great.
+
+Now, let’s display it in our Show page. Let’s open our app at localhost:3000/posts. We’ll click on one of these links to get to the Show page. We’ll see if we can display all the images for the Post down here.
+
+Let’s first go to our controller file under app/controllers/posts_controller.rb, and in the ‘show’ section, we’ll define a new variable. We’ll write:
+
+app/controllers/posts_controller.rb
+…
+def show
+  @images = @post.images
+end
+…
+This code finds all the images in our Image database that belong to the current Post. Let’s save this, and we’ll now be able to use this variable from our view page. Let’s go to app/views/posts/show.html.erb and right before the ‘Edit’ link, we’ll write:
+
+app/views/posts/show.html.erb
+  …
+  <p>
+    Street parking: <%= @post.street_parking %>
+  </p>
+
+  <% @images.each do |image| %>
+    <%= image_tag image.url %>
+  <% end %>
+
+  <%= link_to 'Edit', edit_post_path(@post) %> |
+  <%= link_to 'Back', posts_path %>
+</div>
+This will loop over each image and display the image that’s pulled from its URL. Let’s save and see this in our browser.
+
+Alright, the images show up, but the spacing is off. To force them each onto a row of their own, we could add some <br> tags, but instead let’s add Bootstrap’s ‘thumbnail’ class. We’ll add a , class: "thumbnail" and save.
+
+app/views/posts/show.html.erb
+  …
+  <% @images.each do |image| %>
+    <%= image_tag image.url, class: "thumbnail" %>
+  <% end %>
+
+  <%= link_to 'Edit', edit_post_path(@post) %> |
+  <%= link_to 'Back', posts_path %>
+</div>
+When we refresh, we’ll see that this has the extra benefit of adding a slight border around the image.
+
+With images now set up, our dataset is nearly complete. There’s one last formatting change we should make, which is to translate these 3taps codes into actual neighborhood names. We’ll get started on that in the next video.
+
 
 5.Scrape Location Data
-Look Up Meighborhoods
-Display Neighborhoods
+Look Up Meighborhoods:
+We’ve now saved all the data fields we want to our database. But let’s see if we can take the 3taps neighborhood codes and convert them into human-readable names. The perfect tool for the job is the 3taps Reference API that we used early on.
+
+To refresh our memory, let’s go to the 3taps website and look at the documentation. We’ll be using the fourth section on Locations. If we want to get a list of neighborhood codes in Brooklyn, we’ll need the auth_token parameter, the locality parameter (which is 3taps’s name for a neighborhood), and also this optional city parameter which will limit our list to neighborhoods in Brooklyn only.
+
+We’ll use these parameters to create a new rake task, where our goal will be to save a list of locality codes and their corresponding neighborhood names into our own database. But before we do that, we need to create the database itself. Let’s write rails generate model Location code name. This will create a new Location database with two columns, one for the 3taps code and another for the human-readable name.
+
+Command Line
+$ rails generate model Location code name
+Let’s hit Enter, run ‘rake db:migrate’, and restart our Rails server.
+
+Command Line
+$ rake db:migrate
+Command Line
+$ rails s
+Let’s now go to Sublime Text and open our lib/tasks/scraper.rake file. Scroll to the bottom and copy our ‘destroy_all_posts’ task which we’ll use as a template. Let’s paste it below and replace the description with “Save neighborhood codes in a reference table”. Instead of ‘destroy_all_posts’, let’s name this task ‘scrape_neighborhoods’.
+
+lib/tasks/scraper.rake
+  desc "Save neighborhood codes in a reference table"
+  task scrape_neighborhoods: :environment do
+    Post.destroy_all
+  end
+
+end
+For the task’s code, we’ll delete this line and copy the code from the ‘scrape’ task above, up to the part where we store results in our database. Let’s paste it in here.
+
+lib/tasks/scraper.rake
+desc "Save neighborhood codes in a reference table"
+task scrape_neighborhoods: :environment do
+  require 'open-uri'
+  require 'json'
+
+  # Set API token and URL
+  auth_token = "{YOUR_AUTH_TOKEN}"
+  polling_url = "http://polling.3taps.com/poll"
+
+  # Specify request parameters
+  params = {
+    auth_token: auth_token,
+    anchor: {YOUR_ANCHOR},
+    source: "CRAIG",
+    category_group: "RRRR",
+    category: "RHFR",
+    'location.city' => "USA-NYM-BRL",
+    retvals: "location,external_url,heading,body,timestamp,price,images,annotations"
+  }
+
+  # Prepare API request
+  uri = URI.parse(polling_url)
+  uri.query = URI.encode_www_form(params)
+
+  # Submit request
+  result = JSON.parse(open(uri).read)
+
+  # Display results to screen
+  # puts result["postings"].first["images"].first["full"]
+end
+Since the code to make a data request is pretty similar, we’ll be able to use this as a base and just customize some of the details instead. Our auth_token is still the same, so we’ll leave that here, but we’re no longer using the 3taps Polling URL. Let’s rename this to be location_url and replace the URL itself with the one from the documentation. Don’t forget to change the polling_url down below as well.
+
+lib/tasks/scraper.rake
+  …
+  # Set API token and URL
+  auth_token = "{YOUR_AUTH_TOKEN}"
+  location_url = "http://reference.3taps.com/locations"
+
+  …
+
+  # Prepare API request
+  uri = URI.parse(location_url)
+  uri.query = URI.encode_www_form(params)
+  …
+For the parameters, we’ll keep the auth_token and delete the rest. Instead, the other two parameters we need are level: "locality" and city: "USA-NYM-BRL", which is the 3taps code for Brooklyn. For now, let’s just display the entire JSON hash, so we’ll write puts JSON.pretty_generate result and save.
+
+lib/tasks/scraper.rake
+  …
+  # Specify request parameters
+  params = {
+    auth_token: auth_token,
+    level: "locality",
+    city: "USA-NYM-BRL"
+  }
+
+  …
+
+  # Display results to screen
+  puts JSON.pretty_generate result
+end
+Let’s run this with rake scraper:scrape_neighborhoods.
+
+Command Line
+$ rake scraper:scrape_neighborhoods
+If we scroll up, we’ll see that all of these sections are contained in a hash called locations. And we want the code and the short_name fields. In other words, we want to be able to look up “USA-NYM-WIU” and see that it’s the code for “Williamsburg”.
+
+To do that, we’ll comment out this line and write a loop similar to the one from our first task:
+
+lib/tasks/scraper.rake
+  …
+  # Display results to screen
+  # puts JSON.pretty_generate result
+
+  # Store results in database
+  result["locations"].each do |location|
+    @location = Location.new
+    @location.code = location["code"]
+    @location.name = location["short_name"]
+    @location.save
+  end
+end
+For each result we get back from 3taps, this will create a new row in our Location database table and fill in the code and name columns with the code and short_name values 3taps gives us. Let’s save and run this to see if it works.
+
+Command Line
+$ rake scraper:scrape_neighborhoods
+Now we’ll open our database in SQLite Database Browser and go to the Locations table. Perfect – our app now has a table of neighborhood codes and names to use as a reference. With this set up, we can now translate these codes on our index page in the next video.
+
+Display Neighborhoods:
+In the last video, we created a new Location database to store a list of both the 3taps neighborhood codes as well as their corresponding human-readable names. In this video, we’ll take the neighborhood codes that appear in our index page and translate them.
+
+We could take each code and use the Locations table to look up the matching neighborhood name, but we should avoid doing that because we’ll need to run these translations every time we load the index page. Instead, we can be more efficient by storing the human-readable names directly into our Post database. This way, we’ll only need to translate them a single time and avoid having to run these lookups again in the future.
+
+We’ll do the translations when we first collect the data from 3taps. That means we need to update our rake task under lib/tasks/scraper.rake. Here, where we’re saving the neighborhood code, we should look up this code in our database and save the neighborhood name instead. We’ll write:
+
+lib/tasks/scraper.rake
+namespace :scraper do
+  desc "Fetch Craigslist posts from 3taps"
+  task scrape: :environment do
+    …
+    # Store results in database
+      result["postings"].each do |posting|
+        
+        # Create new Post
+        @post = Post.new
+        @post.heading = posting["heading"]
+        @post.body = posting["body"]
+        @post.price = posting["price"]
+        @post.neighborhood = Location.find_by(code: posting["location"]["locality"]).name
+        …
+This will look in our Location database, find the row with a code that matches the one we’ve grabbed, and give us the corresponding neighborhood name instead. For example, if the posting’s ‘locality’ is “USA-NYM-WIU”, then this will look in our database, find the row at the bottom with a code of “USA-NYM-WIU” and give us the corresponding name of “Williamsburg”.
+
+Let’s save this and before we run it, clear our database again with rake scraper:destroy_all_posts. Remember that since we added the dependent: :destroy to our model file last time, this rake task will not only delete all our Posts, but it’ll also delete the Images that belong to those Posts.
+
+Command Line
+$ rake scraper:destroy_all_posts
+Now we’ll run our scrape task with rake scraper:scrape.
+
+Command Line
+$ rake scraper:scrape
+We got an error: “NoMethodError: undefined method `name’ for nil:NilClass”. This is a pretty common error – it’s one that we’ll see when code that we think should equal one thing equals nil instead. It says the error is from line 40, and we’ll see that that’s the line we just changed.
+
+Here’s where we’re using the name method which is causing the problem. The name method should normally be fine. Given a row in our Location database, the name method will tell us the value stored in the name column. The problem occurs when this part is nil, or when it can’t find a Location with this matching code field. That happens whenever we have a locality code that doesn’t exist in our database or more likely, when we come across a posting where the locality is blank.
+
+When the neighborhood data is missing, it’s fine to leave that column in our database blank, but we definitely don’t want an error that’ll cause our task to stop running. So to solve this problem, we’ll use a convenient method called try. Instead of .name, we’ll write .try(:name).
+
+lib/tasks/scraper.rake
+…
+@post.neighborhood = Location.find_by(code: posting["location"]["locality"]).try(:name)
+…
+If the name is available, it will work as normal, but if it’s not available, then it’ll leave our database column blank and keep going. Let’s save and clear our database again with rake scraper:destroy_all_posts.
+
+Command Line
+$ rake scraper:destroy_all_posts
+Then we’ll run this again with rake scraper:scrape.
+
+Command Line
+$ rake scraper:scrape
+Let’s go look at our index page. That’s much better. In the next video, we’ll take the information we’ve collected and work on creating some filters to help users more easily browse the posts on our site.
+
 
 6.Add Data Filters
-Build an Advanced Filter
-Improve Filter Display
-Structure Filter Layout
+Build an Advanced Filter:
+Our index page is looking great now. We’re showing all the data we want with nice formatting and even pagination. It’s time to make it easier to browse these posts by adding an advanced filter on top that will allow users to show only posts with a specific number of bedrooms, bathrooms, price ranges, and so on.
+
+We’ll work up to having multiple filters, but we’ll start with a single filter for the number of bedrooms and then build it up layer-by-layer. Let’s go to our view page under app/views/posts/index.html.erb. Under our <div class="container">, we’ll write the following:
+
+app/views/posts/index.html.erb
+<div class="container">
+  <div class="filter">
+    <%= form_tag posts_path, method: :get do %>
+      <%= label_tag :bedrooms %>
+      <%= text_field_tag :bedrooms %>
+ 
+      <%= submit_tag "Search" %>
+    <% end %>
+  </div>
+
+  …
+Here we’re using form_tag to create a form. This form has one input field, bedrooms, and a submit button that says “Search”. By putting posts_path (which is the path for our index page), submitting this form will send us to the index page. The method: :get at the end makes sure it’s a normal GET request so we’re not saving anything to a database but instead, the parameters appear in the URL. Let’s save this and see how it looks.
+
+If we try submitting this form with bedrooms as 1 for example, we’ll see that our bedrooms parameter appears in the URL, but the posts that are shown below remain unchanged.
+
+Of the other two parameters, utf8=✓ is automatically added as it’s needed for Internet Explorer browsers, so we’ll leave it there. The commit parameter doesn’t really do anything though, and we can prevent it from showing up by going to our code and adding the , name: nil option to the end.
+
+app/views/posts/index.html.erb
+…
+<%= submit_tag "Search", name: nil %>
+…
+Let’s save, go back to localhost:3000/posts and try submitting the form again. Great – we now just have the utf8 and bedrooms parameters.
+
+Let’s use the bedrooms parameter to filter the posts that get shown. We’ll go to our controller file under app/controllers/posts_controller.rb and write:
+
+app/controllers/posts_controller.rb
+…
+def index
+  @posts = Post.all.paginate(:page => params[:page], :per_page => 30)
+  @posts = @posts.where(bedrooms: params["bedrooms"])
+end
+…
+This line takes the @posts variable that we’ve defined in the line above, selects only those in the list that have the specified number of bedrooms, and replaces the old list in that same @posts variable.
+
+Let’s save and refresh the page. Now, all the posts in our table have only one bedroom, which means our filter is working. Let’s build on this and add a second filter for the number of bathrooms. We’ll start by adding a second input field to our form. We’ll copy the two lines for our bedrooms field and customize it to say bathrooms instead.
+
+app/views/posts/index.html.erb
+<div class="container">
+  <div class="filter">
+    <%= form_tag posts_path, method: :get do %>
+      <%= label_tag :bedrooms %>
+      <%= text_field_tag :bedrooms %>
+
+      <%= label_tag :bathrooms %>
+      <%= text_field_tag :bathrooms %>
+ 
+      <%= submit_tag "Search", name: nil %>
+    <% end %>
+  </div>
+
+  …
+After saving, we’ll go to our controller file and write:
+
+app/controllers/posts_controller.rb
+…
+def index
+  @posts = Post.all.paginate(:page => params[:page], :per_page => 30)
+  @posts = @posts.where(bedrooms: params["bedrooms"])
+  @posts = @posts.where(bathrooms: params["bathrooms"])
+end
+…
+You can see how we’re chaining these together to narrow down our list based on the filter criteria. Let’s save and refresh the page to see our updated filter. We can try searching for 2-bedroom apartments with 1.5 bathrooms and see that it works.
+
+But if instead we leave one of these fields blank by searching for just 2 bedrooms, our filter will return no results. It’s doing this because our app sees these as required fields. So when we leave the field blank, it searches for posts that have an empty string as the number of bathrooms, when of course there are none.
+
+We need to tell our controller to apply the filters only when the field was filled in. To do that, we’ll add a couple ‘if statements’:
+
+app/controllers/posts_controller.rb
+…
+def index
+  @posts = Post.all.paginate(:page => params[:page], :per_page => 30)
+  @posts = @posts.where(bedrooms: params["bedrooms"]) if params["bedrooms"].present?
+  @posts = @posts.where(bathrooms: params["bathrooms"]) if params["bathrooms"].present?
+end
+…
+Let’s save and refresh the page. This time, it works!
+
+But notice that the filters we apply always disappear after we hit ‘Search’. We can make them persist by adding an option to our input field. In our index.html.erb file, after text_field_tag :bedrooms we’ll write , params[:bedrooms] and do the same for our bathrooms input field.
+
+app/views/posts/index.html.erb
+<div class="container">
+  <div class="filter">
+    <%= form_tag posts_path, method: :get do %>
+      <%= label_tag :bedrooms %>
+      <%= text_field_tag :bedrooms, params[:bedrooms] %>
+
+      <%= label_tag :bathrooms %>
+      <%= text_field_tag :bathrooms, params[:bathrooms] %>
+ 
+      <%= submit_tag "Search", name: nil %>
+    <% end %>
+  </div>
+
+  …
+What this code does is set the default value of the field to be the value of the parameter in the URL. So when we hit ‘Search’, our search terms are used to auto-populate the filter for us.
+
+Let’s save and try searching again. We’ll see that this time, our search results persist. Great job with filtering our first two fields!
+
+Let’s add filters for each of the remaining fields users might want to search by. We’ll copy and paste this section and replace bedrooms with neighborhood.
+
+app/views/posts/index.html.erb
+<div class="container">
+  <div class="filter">
+    <%= form_tag posts_path, method: :get do %>
+      <%= label_tag :bedrooms %>
+      <%= text_field_tag :bedrooms, params[:bedrooms] %>
+
+      <%= label_tag :bathrooms %>
+      <%= text_field_tag :bathrooms, params[:bathrooms] %>
+
+      <%= label_tag :neighborhood %>
+      <%= text_field_tag :neighborhood, params[:neighborhood] %>
+ 
+      <%= submit_tag "Search", name: nil %>
+    <% end %>
+  </div>
+
+  …
+We’ll repeat this for a few more fields.
+
+app/views/posts/index.html.erb
+<div class="container">
+  <div class="filter">
+    <%= form_tag posts_path, method: :get do %>
+      <%= label_tag :bedrooms %>
+      <%= text_field_tag :bedrooms, params[:bedrooms] %>
+
+      <%= label_tag :bathrooms %>
+      <%= text_field_tag :bathrooms, params[:bathrooms] %>
+
+      <%= label_tag :neighborhood %>
+      <%= text_field_tag :neighborhood, params[:neighborhood] %>
+
+      <%= label_tag :price %>
+      <%= text_field_tag :price, params["price"] %>
+
+      <%= label_tag :sqft %>
+      <%= text_field_tag :sqft, params["sqft"] %>
+
+      <%= label_tag :cats %>
+      <%= text_field_tag :cats, params["cats"] %>
+
+      <%= label_tag :dogs %>
+      <%= text_field_tag :dogs, params["dogs"] %>
+
+      <%= label_tag :w_d_in_unit %>
+      <%= text_field_tag :w_d_in_unit, params["w_d_in_unit"] %>
+
+      <%= label_tag :street_parking %>
+      <%= text_field_tag :street_parking, params["street_parking"] %>
+
+      <%= submit_tag "Search", name: nil %>
+    <% end %>
+  </div>
+
+  …
+Let’s save this and go to our controller file to add the code that will filter by these parameters. We’ll copy the last line and paste it in, changing bathroom to neighborhood. We’ll do the same thing again for price, sqft, cats, dogs, w_d_in_unit, and finally street_parking.
+
+app/controllers/posts_controller.rb
+…
+def index
+  @posts = Post.all.paginate(:page => params[:page], :per_page => 30)
+  @posts = @posts.where(bedrooms: params["bedrooms"]) if params["bedrooms"].present?
+  @posts = @posts.where(bathrooms: params["bathrooms"]) if params["bathrooms"].present?
+  @posts = @posts.where(neighborhood: params["neighborhood"]) if params["neighborhood"].present?
+  @posts = @posts.where(price: params["price"]) if params["price"].present?
+  @posts = @posts.where(sqft: params["sqft"]) if params["sqft"].present?
+  @posts = @posts.where(cats: params["cats"]) if params["cats"].present?
+  @posts = @posts.where(dogs: params["dogs"]) if params["dogs"].present?
+  @posts = @posts.where(w_d_in_unit: params["w_d_in_unit"]) if params["w_d_in_unit"].present?
+  @posts = @posts.where(street_parking: params["street_parking"]) if params["street_parking"].present?
+end
+…
+Let’s save and refresh the page. It looks messy, but it should work. We’ll try typing in Williamsburg as the neighborhood and YES in the cats field and sure enough, the filter works!
+
+Great job! In the next video, we’ll improve the format of our filters so it’s more intuitive to use.
+
+Improve Filter Display:
+Last time, we created these filters for data, but these text input fields aren’t ideal. Users shouldn’t have to type YES to search for apartments that allow cats. Instead, it should be a simple checkbox. In fact, the same is true for dogs, w_d_in_unit, and street_parking. Let’s go make that change.
+
+In our index.html.erb file under app/views/posts, we’ll delete this text_field_tag line and replace it with:
+
+app/views/posts/index.html.erb
+<div class="container">
+  <div class="filter">
+    <%= form_tag posts_path, method: :get do %>
+      …
+      <%= label_tag :cats %>
+      <%= check_box_tag :cats, "YES", params[:cats] %>
+      …
+
+      <%= submit_tag "Search", name: nil %>
+    <% end %>
+  </div>
+
+  …
+The syntax for this is the name of the parameter (:cats), followed by the value of the parameter when checked, which in our case is "YES" because that’s what will match what’s in our database. Finally, the params[:cats] at the end sets the default value of the checkbox.
+
+Let’s repeat this for our three other fields.
+
+app/views/posts/index.html.erb
+<div class="container">
+  <div class="filter">
+    <%= form_tag posts_path, method: :get do %>
+      …
+      <%= label_tag :cats %>
+      <%= check_box_tag :cats, "YES", params[:cats] %>
+
+      <%= label_tag :dogs %>
+      <%= check_box_tag :dogs, "YES", params[:dogs] %>
+
+      <%= label_tag :w_d_in_unit %>
+      <%= check_box_tag :w_d_in_unit, "YES", params[:w_d_in_unit] %>
+
+      <%= label_tag :street_parking %>
+      <%= check_box_tag :street_parking, "YES", params[:street_parking] %>
+
+      <%= submit_tag "Search", name: nil %>
+    <% end %>
+  </div>
+
+  …
+We’ll save and check it out. We’ll search for apartments in Williamsburg that allow cats and dogs. Good – it works.
+
+Let’s now make our neighborhood field into a dropdown menu that displays all the possible neighborhoods in Brooklyn. We’ll go to our code and replace this text_field_tag line with:
+
+app/views/posts/index.html.erb
+<div class="container">
+  <div class="filter">
+    <%= form_tag posts_path, method: :get do %>
+      …
+      <%= label_tag :neighborhood %>
+      <%= select_tag(:neighborhood, options_from_collection_for_select(Location.all, :name, :name, params[:neighborhood]), { include_blank: true }) %>
+      …
+
+      <%= submit_tag "Search", name: nil %>
+    <% end %>
+  </div>
+
+  …
+Here, the select_tag is creating a dropdown menu for the neighborhood field. The options_from_collection_for_select is basically taking the objects in our Location database, which are neighborhood names, and it’s using the name column to populate our dropdown menu. The include_blank: true at the end will show a blank as the first dropdown result.
+
+Let’s save and see the change in our browser. There we go – that should make it a lot easier for our users.
+
+The last change we’ll make is split our ‘Price’ and ‘Sqft’ filters into a minimum and maximum range. Let’s copy this price section and rename them to be min_price and max_price. We’ll do the same for sqft.
+
+app/views/posts/index.html.erb
+<div class="container">
+  <div class="filter">
+    <%= form_tag posts_path, method: :get do %>
+      …
+      <%= label_tag :min_price %>
+      <%= text_field_tag :min_price, params[:min_price] %>
+
+      <%= label_tag :max_price %>
+      <%= text_field_tag :max_price, params[:max_price] %>
+
+      <%= label_tag :min_sqft %>
+      <%= text_field_tag :min_sqft, params[:min_sqft] %>
+
+      <%= label_tag :max_sqft %>
+      <%= text_field_tag :max_sqft, params[:max_sqft] %>
+      …
+
+      <%= submit_tag "Search", name: nil %>
+    <% end %>
+  </div>
+
+  …
+We’ll save and this time, we also need to adjust our controller code. So in our app/controllers/posts_controller.rb, rather than where(price: params["price"], we’ll write:
+
+app/controllers/posts_controller.rb
+…
+def index
+  @posts = Post.all.paginate(:page => params[:page], :per_page => 30)
+  …
+  @posts = @posts.where("price > ?", params["min_price"]) if params["min_price"].present?
+  @posts = @posts.where("price < ?", params["max_price"]) if params["max_price"].present?
+  …
+end
+…
+Now let’s repeat that for sqft.
+
+app/controllers/posts_controller.rb
+…
+def index
+  @posts = Post.all.paginate(:page => params[:page], :per_page => 30)
+  …
+  @posts = @posts.where("price > ?", params["min_price"]) if params["min_price"].present?
+  @posts = @posts.where("price < ?", params["max_price"]) if params["max_price"].present?
+  @posts = @posts.where("sqft > ?", params["min_sqft"]) if params["min_sqft"].present?
+  @posts = @posts.where("sqft < ?", params["max_sqft"]) if params["max_sqft"].present?
+  …
+end
+…
+Just so you know, you’ll notice that we’ll sometimes grab our URL parameters using double quotes for a string and sometimes we’ll use a colon for a symbol. These are interchangeable and do exactly the same thing.
+
+Let’s save and take another look. Now we can filter for apartments that cost between $2,000 and $3,000.
+
+Good job! Getting our filters working for text fields, checkboxes, and dropdown menus wasn’t easy. In fact, this still looks pretty bad, though it is functional. So next time, we’re going to use the Bootstrap grid system to organize this a bit and add some options to our inputs to make this look a little more professional.
+
+Structure Filter Layout:
+We now have working filters we can use to browse our database of Craigslist posts. This time, we’re going to clean this up by adding some layouts as well as placeholders and other options.
+
+Let’s start by using the Bootstrap grid system to organize these into rows and columns. We want to put the headings in their own row above the input fields. That will give us four total rows: heading, input, heading, input.
+
+We’ll go to our app/views/posts/index.html.erb file to set this up. First, let’s rearrange these fields a bit. We’ll move the price fields first as they’re the filters that are most likely to be used. So our first row will have price, bedrooms, bathrooms, and neighborhood. Our second row will have sqft, our four checkboxes, and our ‘Search’ button.
+
+Let’s create a <div class="row"> and move the labels for our top fields here. We’ll close this <div> and create a new row for those input fields. Let’s do the same thing for our remaining fields.
+
+app/views/posts/index.html.erb
+<div class="container">
+  <div class="filter">
+    <%= form_tag posts_path, method: :get do %>
+
+      <div class="row">
+        <%= label_tag :min_price %>
+        <%= label_tag :max_price %>
+        <%= label_tag :bedrooms %>
+        <%= label_tag :bathrooms %>
+        <%= label_tag :neighborhood %>
+      </div>
+
+      <div class="row">
+        <%= text_field_tag :min_price, params[:min_price] %>
+        <%= text_field_tag :max_price, params[:max_price] %>
+        <%= text_field_tag :bedrooms, params[:bedrooms] %>
+        <%= text_field_tag :bathrooms, params[:bathrooms] %>
+        <%= select_tag(:neighborhood, options_from_collection_for_select(Location.all, :name, :name, params[:neighborhood]), { include_blank: true }) %>
+      </div>
+
+      <div class="row">
+        <%= label_tag :min_sqft %>
+        <%= label_tag :max_sqft %>
+        <%= label_tag :cats %>
+        <%= label_tag :dogs %>
+        <%= label_tag :w_d_in_unit %>
+        <%= label_tag :street_parking %>
+      </div>
+
+      <div class="row">
+        <%= text_field_tag :min_sqft, params[:min_sqft] %>
+        <%= text_field_tag :max_sqft, params[:max_sqft] %>
+        <%= check_box_tag :cats, "YES", params[:cats] %>
+        <%= check_box_tag :dogs, "YES", params[:dogs] %>
+        <%= check_box_tag :w_d_in_unit, "YES", params[:w_d_in_unit] %>
+        <%= check_box_tag :street_parking, "YES", params[:street_parking] %>
+       <%= submit_tag "Search", name: nil %>
+      </div>
+
+    <% end %>
+  </div>
+
+  …
+Let’s save and take a look.
+
+Not exactly how we expected. We need to set the number of columns each section gets. For example, of the 12 Bootstrap grids, we can allocate 4 grids to our price fields and 4 grids to our neighborhood field because it’s pretty long. Bedrooms and bathrooms will each get 2 grids.
+
+So in our code, we’ll add a <div class="col-md-4"> around our price labels. In fact, we should probably combine these into a single label.
+
+app/views/posts/index.html.erb
+<div class="container">
+  <div class="filter">
+    <%= form_tag posts_path, method: :get do %>
+
+      <div class="row">
+        <div class="col-md-4">
+          <%= label_tag "Price" %>
+        </div>
+        <%= label_tag :max_price %>
+        <%= label_tag :bedrooms %>
+        <%= label_tag :bathrooms %>
+        <%= label_tag :neighborhood %>
+      </div>
+      
+      …
+Let’s do these other three as well.
+
+app/views/posts/index.html.erb
+<div class="container">
+  <div class="filter">
+    <%= form_tag posts_path, method: :get do %>
+
+      <div class="row">
+        <div class="col-md-4">
+          <%= label_tag "Price" %>
+        </div>
+        <div class="col-md-2">
+          <%= label_tag :bedrooms %>
+        </div>
+        <div class="col-md-2">
+          <%= label_tag :bathrooms %>
+        </div>
+        <div class="col-md-4">
+          <%= label_tag :neighborhood %>
+        </div>
+      </div>
+      
+      …
+We’ll use these same grid spacings for the input fields below.
+
+app/views/posts/index.html.erb
+<div class="container">
+  <div class="filter">
+    <%= form_tag posts_path, method: :get do %>
+      …
+      <div class="row">
+        <div class="col-md-4">
+          <%= text_field_tag :min_price, params["min_price"] %>
+          <%= text_field_tag :max_price, params["max_price"] %>
+        </div>
+        <div class="col-md-2">
+          <%= text_field_tag :bedrooms, params["bedrooms"] %>
+        </div>
+        <div class="col-md-2">
+          <%= text_field_tag :bathrooms, params["bathrooms"] %>
+        </div>
+        <div class="col-md-4">
+          <%= select_tag(:neighborhood, options_from_collection_for_select(Location.all, :name, :name, params[:neighborhood]), { include_blank: true }) %>
+        </div>
+      </div>
+      
+      …
+Let’s now set the spacing for the headings and fields in the second section.
+
+app/views/posts/index.html.erb
+<div class="container">
+  <div class="filter">
+    <%= form_tag posts_path, method: :get do %>
+      …
+      <div class="row">
+        <div class="col-md-4">
+          <%= label_tag :min_sqft %>
+          <%= label_tag :max_sqft %>
+        </div>
+        <div class="col-md-1">
+          <%= label_tag :cats %>
+        </div>
+        <div class="col-md-1">
+          <%= label_tag :dogs %>
+        </div>
+        <div class="col-md-2">
+          <%= label_tag :w_d_in_unit %>
+        </div>
+        <div class="col-md-2">
+          <%= label_tag :street_parking %>
+        </div>
+      </div>
+      
+      …
+Let’s also rename this label to say <%= label_tag "Washer/dryer in unit" %>.
+
+app/views/posts/index.html.erb
+<div class="container">
+  <div class="filter">
+    <%= form_tag posts_path, method: :get do %>
+        …
+        <div class="col-md-2">
+          <%= label_tag "Washer/dryer in unit" %>
+        </div>
+        …
+Now let’s set the same spacing for the input fields below.
+
+app/views/posts/index.html.erb
+<div class="container">
+  <div class="filter">
+    <%= form_tag posts_path, method: :get do %>
+      …
+      <div class="row">
+        <div class="col-md-4">
+          <%= text_field_tag :min_sqft, params["min_sqft"] %>
+          <%= text_field_tag :max_sqft, params["max_sqft"] %>
+        </div>
+        <div class="col-md-1">
+          <%= check_box_tag :cats, "YES", params["cats"] %>
+        </div>
+        <div class="col-md-1">
+          <%= check_box_tag :dogs, "YES", params["dogs"] %>
+        </div>
+        <div class="col-md-2">
+          <%= check_box_tag :w_d_in_unit, "YES", params["w_d_in_unit"] %>
+        </div>
+        <div class="col-md-2">
+          <%= check_box_tag :street_parking, "YES", params["street_parking"] %>
+        </div>
+        <div class="col-md-2">
+          <%= submit_tag "Search", name: nil %>
+        </div>
+      </div>
+
+    <% end %>
+    …
+Let’s save and refresh the page. That looks much better!
+
+Let’s make a couple more changes. We’ll put our checkbox headings inline with the checkboxes themselves by going to our code and adding Bootstrap’s form-inline class to our form_tag.
+
+app/views/posts/index.html.erb
+<div class="container">
+  <div class="filter">
+    <%= form_tag posts_path, method: :get, class: "form-inline" do %>
+      …
+Then we’ll need to make sure that the labels and checkboxes fall within the same Bootstrap row, so let’s move the labels out of the third row and into the fourth.
+
+app/views/posts/index.html.erb
+<div class="container">
+  <div class="filter">
+    <%= form_tag posts_path, method: :get, class: "form-inline" do %>
+      …
+      <div class="row">
+        <div class="col-md-4">
+          <%= label_tag :min_sqft %>
+          <%= label_tag :max_sqft %>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-4">
+          <%= text_field_tag :min_sqft, params["min_sqft"] %>
+          <%= text_field_tag :max_sqft, params["max_sqft"] %>
+        </div>
+        <div class="col-md-1">
+          <%= label_tag :cats %>
+          <%= check_box_tag :cats, "YES", params["cats"] %>
+        </div>
+        <div class="col-md-1">
+          <%= label_tag :dogs %>
+          <%= check_box_tag :dogs, "YES", params["dogs"] %>
+        </div>
+        <div class="col-md-2">
+          <%= label_tag "Washer/dryer in unit" %>
+          <%= check_box_tag :w_d_in_unit, "YES", params["w_d_in_unit"] %>
+        </div>
+        <div class="col-md-2">
+          <%= label_tag :street_parking %>
+          <%= check_box_tag :street_parking, "YES", params["street_parking"] %>
+        </div>
+        <div class="col-md-2">
+          <%= submit_tag "Search", name: nil %>
+        </div>
+      </div>
+
+    <% end %>
+    …
+While we’re here, let’s also add some placeholder text to our text fields.
+
+app/views/posts/index.html.erb
+<div class="container">
+  <div class="filter">
+    <%= form_tag posts_path, method: :get, class: "form-inline" do %>
+      …
+      <div class="row">
+        <div class="col-md-4">
+          <%= text_field_tag :min_price, params["min_price"], placeholder: "minimum" %>
+          <%= text_field_tag :max_price, params["max_price"], placeholder: "maximum" %>
+        </div>
+        <div class="col-md-2">
+          <%= text_field_tag :bedrooms, params["bedrooms"], placeholder: "# of beds" %>
+        </div>
+        <div class="col-md-2">
+          <%= text_field_tag :bathrooms, params["bathrooms"], placeholder: "# of baths" %>
+        </div>
+        <div class="col-md-4">
+          <%= select_tag(:neighborhood, options_from_collection_for_select(Location.all, :name, :name, params[:neighborhood]), { include_blank: true }) %>
+        </div>
+      </div>
+
+      …
+      
+      <div class="row">
+        <div class="col-md-4">
+          <%= text_field_tag :min_sqft, params["min_sqft"], placeholder: "minimum" %>
+          <%= text_field_tag :max_sqft, params["max_sqft"], placeholder: "maximum" %>
+        </div>
+        …
+We’ll save and refresh the page again.
+
+Okay, the next change we’ll make is to add some Bootstrap styling to each of these text fields as well as the ‘Search’ button. In our code, we’ll add a , class: "form-control input-sm" to the end. The form-control class is what gives it the Bootstrap look and the input-sm class sets the height of the field to be small. Let’s add this to each of our text fields. We’ll also add it to our dropdown menu after include_blank: true.
+
+app/views/posts/index.html.erb
+<div class="container">
+  <div class="filter">
+    <%= form_tag posts_path, method: :get, class: "form-inline" do %>
+      …
+      <div class="row">
+        <div class="col-md-4">
+          <%= text_field_tag :min_price, params["min_price"], placeholder: "minimum", class: "form-control input-sm" %>
+          <%= text_field_tag :max_price, params["max_price"], placeholder: "maximum", class: "form-control input-sm" %>
+        </div>
+        <div class="col-md-2">
+          <%= text_field_tag :bedrooms, params["bedrooms"], placeholder: "# of beds", class: "form-control input-sm" %>
+        </div>
+        <div class="col-md-2">
+          <%= text_field_tag :bathrooms, params["bathrooms"], placeholder: "# of baths", class: "form-control input-sm" %>
+        </div>
+        <div class="col-md-4">
+          <%= select_tag(:neighborhood, options_from_collection_for_select(Location.all, :name, :name, params[:neighborhood]), { include_blank: true, class: "form-control input-sm" }) %>
+        </div>
+      </div>
+
+      …
+      
+      <div class="row">
+        <div class="col-md-4">
+          <%= text_field_tag :min_sqft, params["min_sqft"], placeholder: "minimum", class: "form-control input-sm" %>
+          <%= text_field_tag :max_sqft, params["max_sqft"], placeholder: "maximum", class: "form-control input-sm" %>
+        </div>
+        …
+Finally, we’ll put a , class: "btn btn-primary" to style the ‘Search’ button.
+
+app/views/posts/index.html.erb
+        …
+        <div class="col-md-2">
+          <%= submit_tag "Search", name: nil, class: "btn btn-primary" %>
+        </div>
+        …
+Let’s save and see our updated filters. Great – this looks way better than when we started.
+
+But it looks like we forgot to combine our square footage label. Let’s go fix that now.
+
+app/views/posts/index.html.erb
+      …
+      <div class="row">
+        <div class="col-md-4">
+          <%= label_tag "Square Footage" %>
+        </div>
+      </div>
+      …
+Let’s save and take a look. Great.
+
+Now while this is looking pretty good, notice what happens when we try using some unrealistic search parameters. For example, let’s search for apartments with 25 bathrooms. As expected, our table comes up empty. But it would be much more user-friendly if we could display a message here instead.
+
+So we’ll go to our code and below the filter section, we’ll add an ‘if statement’. We’ll write:
+
+app/views/posts/index.html.erb
+      …
+    <% end %>
+  </div>
+
+  <% if @posts.empty? %>
+    <hr>
+    <h3>No results found</h3>
+  <% else %>
+    <table class="table table-hover table-condensed">
+      …
+    <%= link_to 'New Post', new_post_path %>
+  <% end %>
+
+Let’s save and refresh our search. It looks much better. In the next video, we’ll work on creating a homepage for our app and adding some CSS to put a little polish onto our site.
 
 7.Add Front End Styling
 Design Homepage

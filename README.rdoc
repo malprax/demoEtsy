@@ -143,18 +143,485 @@ Please feel free to use a different markup language if you do not plan to run
 
 Craigslist Scraper Course Page:
 1.Explore 3taps API
-Introduction
-Using the Reference API
-Retrieve Posting Data
-Refine Our API Request
+Introduction:
+Welcome! In this course, we’ll learn how to work with an API to collect data and use this as the foundation for building a web app from scratch. This is an essential skill if you want to gain access to data from the most popular websites. For example, you could look at the social data from Twitter, track job listings on LinkedIn, pull headlines from the New York Times, and even get real-time weather updates from Accuweather. For this course, we’ll be working with the popular classified ads site, Craigslist, and build a web app using their apartment listing data.
+
+In this video, we’ll cover the basics of what we’ll be learning and go over the app we’ll be building. But first, let me mention that this course does require having some familiarity with Ruby on Rails (we are building a web app after all). I’m going to assume that this isn’t the first time you’ve built a web app, but if you’re new to working with code or if you find yourself in over your head, I recommend taking a step back and going through one of the beginner level BaseRails courses first.
+
+Ok, so first, I want to provide some context to make sure you’ll be learning the right skills. If you want to gain access to data on the Internet, there are two different approaches. The first approach is to write a computer program that can find and grab useful pieces of information on a webpage. This is essentially the same process as if we were to visit a URL and manually copy/paste the data we wanted into a spreadsheet. The difference is that by using the speed and power of a computer, we can scan many, many pages very quickly. This approach is called “web scraping” or “screen scraping”. This won’t be something we cover in this course, but I recommend learning it at some point because it can be used on almost any website on the Internet.
+
+The second approach to gain access to data is by using an API. This is the skill we’ll be learning here, and it’s useful only for sites that have an API available. Fortunately, more and more popular sites are creating their own APIs for developers to use. In other words, they wanted to make the data available to the public and created an official process for developers to make requests. For example, Amazon created an API to allow access to their trove of product information. In doing so, they’ve made it much easier to build apps around this data, which ultimately drives more traffic to their site. Now these APIs aren’t always free, as we can sometimes be charged a fee (especially for valuable or hard-to-find data). But in general, it’s best to use an API when one exists, and rely on screen scraping only as a backup plan.
+
+In this course, we’re going to use an API to collect data from Craigslist. This is a really interesting case because despite the popularity of their site, Craigslist does not have their own API. Instead, we’ll be using the third-party 3taps API as an alternative. 3taps will serve as a good, real-life example to give us practice on how to read unfamiliar documentation and explore a new dataset.
+
+Using 3taps, we’ll be focusing on Craigslist’s apartment listings that are available for rent in Brooklyn. We’re going to take the data we retrieve, store it in a database, and build a web app around it. By having control over the data ourselves, we’ll be able to build our own user interface and provide custom features that may not be available on Craigslist itself.
+
+A good example of the kind of site you can build with this approach is www.padmapper.com. Padmapper has become a popular alternative to Craigslist for finding apartment rentals. It takes Craigslist apartment listings and overlays them onto a Google Map to create an improved apartment browsing experience. This just goes to show that once you have control over the data yourself, there’s really no limit to how you can present the information to your users.
+
+Let’s now go over the app that we’ll have built by the end of this course. We’ll be creating an apartment rental site for Brooklyn, New York by collecting the most recent posts from Craigslist and building a nice UI around the data we’ve gathered.
+
+First, we’ll collect the data through the 3taps API and store the information in a database. We’ll then display this data on a web app we’ll build in Rails. When users first get to our homepage, they’ll be able to filter their apartment search by different categories such as price, number of bedrooms and bathrooms, square footage, and so on.
+
+Let’s try it out now. We’ll search for 2 bedroom apartments in the Brooklyn neighborhood of Williamsburg. We’ll get taken to a search results page with all the apartments that match the filters we’ve set. Here, we’ll be able to see a preview of what the apartment looks like, as well as some general information about each one. If we click on a post, we can see the images that were uploaded, the details that we’ve gathered, and the description.
+
+Finally, after building the app, we’ll automate the data collection process to run every 10 minutes so that our content will be updated automatically.
+
+Okay, in the next video, we’ll get started by exploring the 3taps API for the first time.
+
+
+Using the Reference API:
+In this video, we’ll get started with the 3taps API, which we’ll be using to collect the apartment listing data we need from Craigslist. I’m going to assume that you already have Rails installed, along with a text editor, command line, and everything else you need to build a web app. If you don’t have all of these installed, I recommend going to one of the beginner-level BaseRails courses and following along with the installation process there.
+
+Ok, let’s start by opening our Google Chrome browser and going to www.3taps.com. After closing the popup that appears, let’s scroll down and click on ‘Register as a Developer’. Fill in the signup form and you’ll be sent an email with a link to activate your account. I already have an account so I’ll skip this step. Once you do that, you’ll be given an API key that you’ll need whenever you request data from 3taps.
+
+Now that we’re all set up, let’s go take a look at the documentation. The 3taps API is actually three different APIs: Search, Polling, and Reference. Whenever we start working with an unfamiliar API, the number one most important thing we can do is read the documentation. Only by reading the documentation and making a bunch of different data requests can we really start to understand the data we have available and how to access it.
+
+Let’s begin with the Reference API. “The 3taps Reference API provides information about the data sources, category groups, categories and locations available within the 3taps system.” So basically, we can use the Reference API to ask for information about the 3taps data set. We’ll need this to look up the specific names and acronyms that they use to classify data into different categories, subcategories, countries, regions, and cities.
+
+I’ve already read this documentation pretty thoroughly and so I’ll cover the highlights with you, but it’s a good exercise to read it over yourself and see if you can make sense of it. Before, I was always tempted to cut corners and just skim it, but I learned that reading documentation well is such an underrated skill. The extra 30 minutes it takes to read the API’s documentation can save anywhere from a couple hours up to a few days of messing around with the API yourself. So be patient and always read the documentation – you should pause the video here and go do it.
+
+No seriously, pause the video. I can wait.
+
+Ok so hopefully you’ve at least skimmed to the bottom. Even if you didn’t understand everything, you’ll have seen that there are basically five different types of data requests we can make to the Reference API. We can ask for a list of Data Sources; we can ask for a list of Category Groups; we can also ask for Categories, Locations, and do Location Lookups.
+But in this case, it’s hard to get a good grasp of this – after all, we don’t even know what Categories and Category Groups are! So let’s start playing around with this and make some requests to the Reference API.
+
+Under the section called ‘Data Sources’, it says: “To obtain a list of data sources, make an HTTP GET request to the following URL: http://reference.3taps.com/sources”.
+
+A GET request is just a visit to this URL asking for data. GET requests are really no different from the normal browsing we do on an everyday basis. For example, when we go to www.nytimes.com, we’re asking for data. The data that’s returned to us comes in the form of a webpage with headlines and images.
+
+Let’s make a GET request to 3taps now by copying the URL and pasting it in a different tab. We can see it says “Your query does not include a registered authentication token (auth_token). Please sign up for an authentication token at https://developer.3taps.com/signup”.
+
+So one way in which GET requests differ from normal browsing is that they can accept one or more parameters as inputs. In this case, 3taps won’t give us any data unless we include our authentication token. We can see this is also mentioned back in the documentation as a required parameter.
+
+To add a parameter to our request, we’ll go back to the URL and add a ? followed by the name of the parameter, which is auth_token, followed by an =, and finally the value which we got from 3taps. We can find this after we sign in and go to “Dashboard”.
+
+So we’ll copy this and paste it on top. After we hit ‘Enter’, we’ll now see a list of 3taps data sources on the page. While we’re using 3taps to access Craigslist, there are many more sites that 3taps could help us collect data from. A few of the largest ones are Cars.com, eBay, and the job search site, Indeed.
+
+The list that we see is written in a format called JSON. JSON is a way of organizing data, mainly by using these name-value pairs. In this case, each of the data sources we see has both a code and a name. We’ll need the code later on when we request data from 3taps, so let’s go to ‘File→Save Page As…’ and save this page to our desktop as sources.json. This way, in the future, we can pull up this page as a reference without having to submit another request to 3taps.
+
+Great, let’s jump to the next section of the documentation, for Category Groups. Here, we’ll need the same auth_token parameter, but we’ll be making our GET request to a different URL. Let’s copy this, go back to our other tab, and replace the portion of the URL before the question mark.
+
+This time, we get a different list of the 3taps Category Groups. All the data they have is organized into one of these groups. The one we’re interested in is “RRRR”, “Real Estate”. Like last time, we’ll save this to our desktop.
+
+Let’s do the same thing for the third section of the documentation, Categories. This one also requires only the auth_token parameter, so we’ll just copy this URL and paste it in like before.
+
+The list we see this time is much longer. From the structure of each section, we can tell that Categories are really a subdivision of the Category Groups we saw previously. For example, the Category Group “Animals” is further divided into “Pets”, “Supplies”, and “Other”. If we scroll down to “Real Estate”, we’ll see that we have “Commercial Real Estate”, “Housing for Rent”, “Housing for Sale”, and so on. The one we’re interested in is “Housing for Rent”. Let’s save this to our desktop.
+
+Let’s move on to the fourth section of the Reference API, Locations. Locations are a little different from what we’ve seen so far. In addition to the auth_token, we also need to provide a second parameter, level. This level can be ‘country’, ‘state’, ‘metro’, basically how specific you want it to be. We’ll first copy this URL and paste it in like before. Then at the end, we’ll add &level=country and hit Enter.
+
+We now have a list of all the countries that 3taps collects data for. Each country has latitude and longitude ranges, a code, a full name, and a short name. Let’s find the United States – its code is “USA”.
+
+Great. Now going back to the documentation, if we wanted to get a list of all the US states, we could go to our URL and replace the word country with state. Let’s try it out. If we hit Enter, we’ll see not only US States like Alabama and Alaska, but also Canadian States like Alberta and Australian States like Australian Capital Territory. We need to add a filter to limit our list to US States only.
+
+In the documentation, in addition to the two required parameters, we also have the option to use these optional parameters below. In this case, we’ll leave the level we have now, but we’ll add the optional country parameter. It says “the parameter’s value must be a valid 3taps country code”, so we’ll go back to our URL and add an &country=USA, which was the country code we saw earlier in our list of countries. Now our list is correct – we have a list of all 50 states plus the District of Columbia.
+
+Since we’re looking for apartment listing data in Brooklyn, NY, the state code is “USA-NY”. And to get Brooklyn, let’s go to the URL and replace level=state with level=city, and change country=USA to state=USA-NY and hit Enter. If we scroll down, the code for Brooklyn is “USA-NYM-BRL”. We’ll need this code later on, so let’s save this to our desktop as well.
+
+Of course, there’s a lot more you can do with all the different combinations of countries, states, metros, and cities, so I encourage you to explore around and get a feel for this yourself. A good exercise is to see if you can find the city or metro of where you live.
+
+We’ll skip over the fifth and final section of the Reference API because we won’t need it for our project. This last section is designed for reverse location lookups, when we have a 3taps location code and need to look up its level, latitude, longitude, and other details.
+
+Now that we’ve taken a close look at the data available in 3taps, including the various sources, categories, and locations, we’re ready for the next section, where we’ll move on from the Reference API and turn our attention to the Polling API, which we’ll use to start collecting the apartment listing data we need.
+
+Retrieve Posting Data:
+Last time, we took a look at the 3taps Reference API to learn about the data they had available. We learned that 3taps collects data from many sites beyond just Craigslist, such as Cars.com, eBay, and Indeed. We also saw that 3taps uses Category Groups, Categories, and Locations to organize the data it retrieves. In this video, we’ll start using the Polling API to start gathering data for ourselves.
+
+When we were first introduced to the 3taps documentation last time, we saw that there were three different APIs available: Search, Polling, and Reference. We’ve looked at the Reference API already, so let’s take a look at the two others, starting with the Search API.
+
+“The 3taps Search API is responsible for searching against the database of postings. For example, it can be used to find all postings from a particular data source, category and location, or to find postings with a given annotation value.”
+
+You can read over the rest of this if you like, but the Search API is optimized for searching quickly. It’s best for situations where you need to search for content with specific keywords. However, we’re not so interested in search. We just want to retrieve the most recent apartment listings regardless of what keywords they contain. For that, we’ll need to look to the Polling API.
+
+‘The 3taps Polling API makes it possible for external systems to “poll” the Data Commons server to obtain a list of new and updated postings as they come in.’
+
+This is exactly what we need. We want to check with 3taps periodically and gather all the new apartment listings that have come in since the last time. Like last time with the Reference API, I recommend that you take some time to read this over, as it’s more complicated than last time. When you’re ready, we’ll go over the highlights together.
+
+Ok, first let’s understand the way that 3taps processes its incoming data. If each of these rectangles is a Craigslist post, with the older ones on the left, then 3taps is receiving a constant stream of new posts from the right. That means if we gather all the latest posts at one point in time, then when we check 10 minutes later, there will probably be new posts, these green rectangles, that have come in since then. So for us, these three posts are the new ones we should now retrieve.
+
+But newness is relative – it depends on when we checked last. 3taps uses something called an anchor to give us only the new posts that we haven’t seen yet. We’ll see that this anchor is a required parameter in many of the requests we’ll make.
+
+One final note: if there are too many new posts, 3taps will give them to us one page at a time. So in these situations, we’ll have to make more than one request to be able to get all of them.
+With that context out of the way, let’s move onto the API itself. There are two different types of requests we can make. The first is the “Anchor” API call. An API call is just the same as the GET requests we were making in the last video. Since we haven’t made any data requests yet, we don’t have an initial anchor to use. That’s what this Anchor API is for. Once we’ve made our first data request, we’ll always get back an updated anchor to keep track of the last post we’ve received.
+
+To use the Anchor API, we need two required parameters. The first is our auth_token, which we have from last time. The second is timestamp, which is used to give us an anchor value from that time. It says the timestamp needs to be “the desired date and time, as an integer number of seconds since the 1st of January 1970 (”unix time"), in UTC".
+
+Let’s first understand Unix time. Unix time is a way to display date and time. Rather than use Month/Day/Year or Day/Month/Year, Unix time is just the number of seconds since January 1st, 1970. And UTC is used as a universal time zone. It’s an abbreviation for Coordinated Universal Time, but it’s in French, which is why the letters are out of order.
+
+All in all, we need to provide the Unix time corresponding to the date and time we want, and we’ll be given an anchor value in return. I like to use one of the many tools online to help with converting regular time into Unix time. If we open a new tab and search ‘convert Unix time’, we can click on any of these links. On the convert-unix-time.com site, we can enter any date and time and it will convert it for us. Instead, we’ll just be copying over the timestamp shown for the current hour.
+
+But first, let’s start building our API request by going back to the documentation and copying the Anchor URL they provide. We’ll open a new tab and paste that in. At the end, we’ll add a question mark followed by the name of our first parameter, auth_token, and then an =. We now need to put in our 3taps API key. If you didn’t write it down anywhere, you can always go back and click the ‘sign in’ link to see it. Let’s copy this and paste it to the end of our URL.
+
+Now to add our second parameter, we’ll add an & and the name of the parameter, timestamp, followed by an =. We’ll copy the timestamp we saw earlier, and paste it in. After we hit Enter, we’ll see that we got an anchor we can use. We’ll need this anchor in a moment.
+
+Let’s go back to the documentation. The second type of request we can make is the “Poll” API call – this is what we’ll use to collect our Craigslist posts. We’ll start off by putting in the required auth_token parameter along with the optional anchor we just received. Let’s first copy the URL and paste it into another tab. We’ll now add a ? followed by auth_token= and then copy over our API key. For our second parameter we’ll add an & followed by anchor= and we’ll grab our anchor from our previous request. Let’s hit Enter.
+You should see a massive amount of text – this is all the data that 3taps has collected from its many sources in the past hour. The data is still in JSON format, but because it isn’t formatted nicely like before, it’s pretty tough to read. To solve this problem, we’ll download a Google Chrome extension called JSON Formatter.
+
+In our Chrome browser, we’ll click this button on the right, go to “More tools”, and select “Extensions”. Scroll to the bottom and click on “Get more extensions”. In the search bar, type “JSON Formatter” and hit Enter. Under ‘Extensions’, click the button to download and select ‘Add’ to give it the right permissions.
+
+Now if we go back to our data request and refresh the page, the JSON should be automatically displayed in a structured format and much easier to read. We can even click on the small gray arrows to collapse the sections we don’t need to see. Note that the data you see will probably be different from mine, as 3taps is receiving new data all the time. But the overall structure should be the same.
+
+Each post contains a ton of information. For example, it has an ID, a source (in this case, cars.com), a category which we saw earlier in the Reference API, and the external URL which we can click on to see the actual listing itself.
+We also get all this other data, like the post’s heading, timestamp, a bunch of annotations, and location information. This is the structure that 3taps uses for all the data it collects, whether they’re used car listings, job posts, or items for sale. But we’re only interested in seeing apartment rental listings from Craigslist, so we need to filter this to show only the posts we want. And that’s what we’ll be working on next time.
+
+So to sum up, in this video we made our first actual data request. We learned how 3taps uses its system of anchor values to keep track of whether data is old or new, and we made an API call to get an initial anchor to use. We then used that anchor in a second request to get back data, which was formatted nicely for us from the JSON Formatter Chrome extension we installed. All of this practice with making API calls will be put to good use next time, as we add optional parameters to build out our request further.
+
+Refine Our API Request:
+In the last video, we received our first set of 3taps posting data. We got an initial anchor, which 3taps will use to remember which posts we have or haven’t seen yet.
+As a refresher, here’s the API request we made last time. Note that your data may have changed, as it’s being updated constantly. If we collapse the postings section by clicking on the small gray arrow, we’ll see that there are 1,000 items, which is the maximum that 3taps will return to us. Most of these aren’t what we’re looking for though, so let’s add a few more parameters to our API request to refine the results we receive.
+
+From the documentation, we can scroll down to the Poll API Call section and see that there are many optional parameters we can include. All but one of these are used for filtering the content that’s returned to us, which is what we’ll do now.
+
+We’ll start by adding a filter for posts from Craigslist only. We’ll go back to our API call and add a source parameter. To check the code for Craigslist, let’s open the sources.json file on our desktop that we saved from the Reference API. The 3taps code for Craigslist is “CRAIG”, so let’s type that in and hit Enter.
+
+Great – it seems like our results are now filtered to include Craigslist posts only. Let’s use the same approach and add a couple more filters. We’ll start by adding a category_group and category filter. Checking our category_groups.json reference file, we can see that ‘Real Estate’ has a code of ‘RRRR’. And opening our categories.json file, we’ll find ‘Housing for Rent’ listed under the code ‘RHFR’. Let’s add this to our API call: &category_group=RRRR&category=RHFR.
+
+Okay, now we’re only looking at Craigslist apartment listings. If we take a look at this information, we should see that it matches exactly with that in the external URL. There’s even a lot of well-organized listing information contained in the annotations, like the number of bathrooms, whether cats are allowed, square footage, and so on.
+
+Let’s add another parameter to filter by location as well. We can drill down and be as specific as we like here, setting the country, state, metro, even down to the zipcode. But for me, I’m going to add a city filter to limit my results to Brooklyn, NY. We already made a call to the Reference API previously, so I can open the locations.json file I have saved on my desktop and find that the 3taps code for Brooklyn is ‘USA-NYM-BRL’. Let’s add that to our URL, &location.city=USA-NYM-BRL, and hit Enter.
+
+Now each one of the posting results will be in the city of Brooklyn. If we collapse the postings section, we’ll see that we have far fewer listings now. This makes sense, as our filters are now quite specific about what we’re looking for.
+
+While there is a lot of data here, if we look carefully we’ll see that there are still some key pieces that aren’t being shown. For example, where is the body text of the post? Or the listing price?
+
+We’ll be able to set which data fields we want to receive by using the final parameter called retvals, which is short for ‘return values’. The documentation says that retvals is:
+
+“A string listing the fields which should be returned back to the caller. The various fields should be separated by commas. At present, the following fields can be included in this parameter.”
+
+So the list below is the full range of posting fields that we can ask for. We can see the body and price fields we were looking for earlier. To use this, we’ll pick and choose the fields we want, and include them in our API request with commas in between. If we omit the retvals parameter, then 3taps will give us only these lower 8 fields by default. And if we need an explanation of what each field is, we can scroll down to see a description of each one at the bottom.
+
+Let’s try this out. In our API request’s URL (which is getting pretty long now), we’ll type &retvals= and then we’ll pick a few fields to include. I’m going to omit fields like source, category, and category_group because those should be the same for all our posts. I’ll write location,external_url,heading,body,timestamp,price,images,annotations. Let’s hit Enter.
+
+You can see that we got most of the same fields as before, but we now also have fields like body and price that we were missing earlier. The images field also gives us a list of URLs where we can find each of the images from this Craigslist post. Overall, the dataset that we see here is what we’ll want to build our web app around.
+
+So in this video, we learned to use a variety of filters and other optional parameters to refine our API request. Now that we’ve had a chance to play around with the different options, our next step is to figure out how to make this same API call not through a URL, but through a script that we write ourselves in Ruby. That’s what we’ll be working on next time.
+
 
 2.Import Data Into Our App
-Convert Our Request to a Script
-Create a Rake Task
-Save Posts to Database
+Convert Our Request to a Script:
+In the last video, we refined our API request to include the specific source, categories, return values, and other data options we wanted. This time, we’ll make the same request, but through a Ruby script we’ll be writing, rather than through our browser. This is an important step because without a script, we won’t have a way to automate our request and integrate it into a web app later on.
+
+Let’s start by opening a new file in Sublime Text. I’ll save this in my root directory (my “alexyang” folder) and call it craigslist_scraper.rb.
+
+We’ll write our script in three chunks and I’ll explain as we go along. Here’s the first chunk:
+
+craigslist_scraper.rb
+require 'open-uri'
+
+# Set API token and URL
+auth_token = {AUTH_TOKEN}
+polling_url = "http://polling.3taps.com/poll"
+In this first section, we’re using the require statement at the top to give us access to the functionality of the ‘open-uri’ Ruby gem, which allows us to open URLs from within our script. Whereas in Rails, we would typically add gems to our Gemfile and install them by running bundle install, the process is slightly different when we’re working with a Ruby script. In this case, we just declare the gems we need at the top and install them manually, if necessary. The ‘open-uri’ gem comes installed by default, so we should be all set.
+
+Below the require statement, we’re creating two variables, auth_token and polling_url. Pretty straightforward.
+
+Okay, let’s write the second chunk of our script:
+
+craigslist_scraper.rb
+…
+# Specify request parameters
+params = {
+  auth_token: auth_token,
+  anchor: {ANCHOR}
+}
+If you don’t have the anchor we used from last time, just make another request to the anchor API to get a new one. In this section, we’re setting a couple of the basic parameters we want to use in our data request. It’s better not to spend time plugging in all of our parameters right away because we want to make sure that a basic request works first. In general, the more incrementally we can code, the easier it will be to find and fix errors that come up.
+
+Here, our auth_token parameter is equal to the value of the auth_token variable we set above. And our anchor parameter is just hard-coded to what we used last time.
+
+Let’s write the third chunk of our script:
+
+craigslist_scraper.rb
+…
+# Prepare API request
+uri = URI.parse(polling_url)
+uri.query = URI.encode_www_form(params)
+
+# Submit request
+result = open(uri).read
+
+# Display results to screen
+puts result
+This last chunk is a little more complicated, but let’s walk through it line-by-line. In these first couple lines, we’re preparing our URL request by starting with our base URL, which is the variable polling_url, and then adding on each of our parameters from the params variable above. To get into specifics, we need the parse method to take the string we have in our polling_url variable and convert it into a URI object, which we need in a data request. It sounds very technical but we’re basically telling our computer that this string here is actually a URL.
+
+And the encode_www_form method takes the array of parameters we have above and converts it into the format with ampersands and equals signs. Together, these two lines are doing the equivalent of typing in the long URL in our browser.
+
+We can think of this next line as essentially hitting Enter. It’s submitting our request (which is contained in the uri variable) and storing all the data that we get from 3taps in a variable named result.
+
+Finally, we’re using the puts function, which stands for “put string”, to display all the information onto our screen.
+
+It’s okay if you don’t understand all the individual details just yet. But it’s important to see the big picture, especially how each step here compares to the process of making this same request through our browser.
+
+Let’s save and open up our command line to run this script. Since I saved the script in my root directory, ‘alexyang’, I can just run my script from here. If you saved your file somewhere else, you may need to cd (or change directory) into the folder where you saved it.
+
+Let’s type ruby craigslist_scraper.rb and hit Enter.
+
+Command Line
+$ ruby craigslist_scraper.rb
+It’s kind of hard to tell, but this is actually the same data we would get in our browser. It’s just very difficult to read because it isn’t formatted very well. The problem is that our script doesn’t realize that this data is all in JSON format. It thinks this is regular text and so it hasn’t applied any formatting whatsoever.
+
+We can fix that by making a couple changes to our script. First, around our open(uri).read, we’ll wrap it with JSON.parse( and close our parentheses at the end. Then instead of puts result, we’ll type puts JSON.pretty_generate result.
+
+craigslist_scraper.rb
+…
+# Submit request
+result = JSON.parse(open(uri).read)
+
+# Display results to screen
+puts JSON.pretty_generate result
+The JSON.parse is telling our script to interpret the 3taps data not as regular text, but as JSON. And the pretty_generate method formats that JSON to display nicely onto our screen.
+
+Now to use these methods, we need to use the ‘json’ gem, which like ‘open-uri’ is also installed by default. So at the top, we’ll write require 'json'.
+
+craigslist_scraper.rb
+require 'open-uri'
+require 'json'
+…
+Let’s save and run this again.
+
+Command Line
+$ ruby craigslist_scraper.rb
+This time, the data should be much easier to read.
+
+To finish off our script, the last thing we’ll do is add in all the other parameters we used from last time. In our params variable, let’s add a comma after the anchor parameter, and write a few more:
+
+craigslist_scraper.rb
+…
+# Specify parameters
+params = {
+  auth_token: auth_token,
+  anchor: {ANCHOR},
+  source: "CRAIG",
+  category_group: "RRRR",
+  category: "RHFR",
+  'location.city' => "USA-NYM-BRL",
+  retvals: "location,external_url,heading,body,timestamp,price,images,annotations"
+}
+…
+This should all be pretty straightforward, except for the line starting with location.city. You’ll see that we couldn’t use the standard ‘name: value’ syntax here. Instead, we had to place the name in quotes and use a hashrocket instead (that’s what this => is called). In most cases, we’ll be fine using the ‘name: value’ syntax, but there are special cases like here when we have a period in the middle, where we need to fall back on the hashrocket syntax instead. They do exactly the same thing, but the ‘name: value’ syntax is just a shortcut that works 90% of the time.
+
+Let’s save and run this script again.
+
+Command Line
+$ ruby craigslist_scraper.rb
+Now we’ll see that all our results are from Craigslist, limited to posts related to housing for rent, and all the other filters that we set. We just took a really important step. The script that we wrote is going to serve as the foundation of database we’ll be using for our web app. In the next video, we’ll switch gears and begin building our web app. The plan is to get both pieces ready, so we’ll be able to integrate them together to finally have an app that can automatically pull in data from Craigslist.
+
+
+Create a Rake Task:
+Up to this point, we’ve managed to access Craigslist posts by making data requests to the 3taps API both through our browser and through the Ruby script we wrote. Now we’re going to switch gears and start building our web app.
+
+For this portion of the course, I’ll assume that you’re already familiar with the fundamentals of building a Rails app, so I’m going to skip over basic Rails concepts like Gemfiles and launching the Rails server. That’ll allow us more time to focus on the more advanced topics that aren’t covered in the beginner-level BaseRails courses.
+
+Let’s get started by creating a new Rails app from our command line. From my root directory, ‘alexyang’, I’ll type rails new craigslist_scraper and hit Enter.
+
+Command Line
+$ rails new craigslist_scraper
+When this finishes, let’s type cd craigslist_scraper to change into our ‘craigslist_scraper’ directory, and then the subl . shortcut to open our app in Sublime Text. If you don’t have this shortcut set up, just open the file manually through the Sublime Text app.
+
+Command Line
+$ cd craigslist_scraper
+$ subl .
+With our code files open, let’s also go back to our command line, and open a second tab, navigate to our app’s folder, and launch our Rails server.
+
+Command Line
+$ rails s
+You should be able to see that your app is running by opening the browser and going to localhost:3000.
+
+Let’s begin by creating a structure for the main resource on our site, the Craigslist posts that we’re pulling from 3taps. For simplicity, we’ll use a scaffold and type rails generate scaffold Post, followed by each of the fields we want and their corresponding data types. Typically, we’d write heading:string body:text... but here’s a shortcut: we can leave off the :string and our app will still assume that the field is a string by default. So let’s delete this and write heading body:text price:decimal neighborhood external_url timestamp and hit Enter.
+
+Command Line
+$ rails generate scaffold Post heading body:text price:decimal neighborhood external_url timestamp
+We’ll now run rake db:migrate to create our Post database and then restart our Rails server.
+
+Command Line
+$ rake db:migrate
+Command Line
+$ rails s
+We can see our new index page by going to our browser and visiting localhost:3000/posts.
+
+There’s no data here yet. Typically, we’d populate our database of Posts by manually entering them through our app’s New Post form, but let’s see if we can make a couple changes to the script we wrote last time and populate our database with real Craigslist data instead.
+
+Before we do this, let me introduce the concept of a rake task. We can think of a rake task as a script that we can run from outside our app. For example, rake db:migrate and rake routes are two popular rake tasks that help us make database changes and view the available URLs for our app. We can see a list of all the rake tasks we can run by typing rake db -T -A.
+
+Command Line
+$ rake db -T -A
+In the list that appears, the left column has the name of the rake task while the right side has a description, if it’s available.
+
+In addition to these standard tasks, we can create our own custom rake task as well. And that’s exactly what we’re going to do – we’re going to convert the Ruby script we wrote into a custom rake task. Creating new rake tasks is much like generating a new controller. We’ll write rails generate task, and then come up with a name for our new group of tasks as well as each individual task itself. We’ll assign our tasks to a group called scraper, create two tasks, scrape and destroy_all_posts, and then hit Enter.
+
+Command Line
+$ rails generate task scraper scrape destroy_all_posts
+A new file was created for us, so let’s go back to Sublime Text and go to lib/tasks to check it out.
+
+This scraper.rake file can hold the code for multiple rake tasks, all grouped inside the namespace called scraper. Right now, it’s set up for two tasks: scrape, where we’ll be copying over our script from last time, and destroy_all_posts, which we’ll write in a later video to quickly reset our database of posts.
+
+Let’s start by writing a description for our scrape task. We’ll write ‘Fetch Craigslist posts from 3taps’. Now we need to write the code for the task. Let’s open up our craigslist_scraper.rb file from last time which we’ll be using as a base, copy all the code, and paste it in between the do and the end.
+
+lib/tasks/scraper.rake
+namespace :scraper do
+  desc "Fetch Craigslist posts from 3taps"
+  task scrape: :environment do
+    require 'open-uri'
+    require 'json'
+
+    # Set API token and URL
+    auth_token = "36ba890f43a7cfa7e5a68e23c6ed435d"
+    polling_url = "http://polling.3taps.com/poll"
+
+    # Specify request parameters
+    params = {
+      auth_token: auth_token,
+      anchor: 1503713374,
+      source: "CRAIG",
+      category_group: "RRRR",
+      category: "RHFR",
+      'location.city' => "USA-NYM-BRL",
+      retvals: "location,external_url,heading,body,timestamp,price,images,annotations"
+    }
+
+    # Prepare API request
+    uri = URI.parse(polling_url)
+    uri.query = URI.encode_www_form(params)
+
+    # Submit request
+    result = JSON.parse(open(uri).read)
+
+    # Display results to screen
+    puts JSON.pretty_generate result
+  end
+  …
+Since the code is unchanged, we should be able to run it and see the same output from last time. So let’s save and go back to our command line. First, let’s type rake db -T -A to see our list of rake tasks again.
+
+Command Line
+$ rake db -T -A
+If we look carefully, we’ll see the two new tasks we just added. To run our scrape task, we’ll just use rake scraper:scrape and hit Enter.
+
+Command Line
+$ rake scraper:scrape
+Good, looks like it’s working. In the next video, instead of displaying the data to the screen, we’ll store it in our currently-empty database of Posts.
+
+
+Save Posts to Database:
+In the last video, we created our new Rails app and wrote a custom rake task to run our script. In this video, we’ll store the data we’ve scraped in our Posts database.
+
+We’ll first need to create a row for each posting and pick out the heading, body, and other information here to fill in the row’s columns.
+
+We first need to figure out the right syntax to use to grab a single field like the heading. It helps to view the 3taps data in our browser, so I’ve pulled up the API call from last time. Unlike in our command line, here we can see the full structure of the data. When this data is loaded up in Ruby, it’s stored in something called a hash. Remember that JSON is really just a kind of format to display data, but when Ruby sees JSON, it interprets it into a different format known as hash. So really, a hash is just the Ruby version of JSON data – you can think of them as essentially the same thing. You’ll be able to recognize hashes by their curly braces on the outside and their ‘name:value’ format on the inside.
+
+This hash is really just three ‘name:value’ pairs. We have "success":true, "anchor":1503714374, and postings with all this information. That’s right – all the data we want is contained in the value corresponding to the postings name. We can see that by collapsing the postings section. See? Just like any other ‘name:value’ pair.
+
+Instead of a single value like true or our anchor value, the third ‘name:value’ pair contains an array of 1,000 postings. We can tell it’s an array by the square brackets on the outside. (Remember, curly braces:hash :: square brackets:array.)
+
+We’ll expand this back and instead collapse an individual posting to see that each posting is a hash as well. This means that postings is an array of hashes, itself contained inside a hash. A bit confusing, but it’s important to understand the structure of the data since we’ll need to work with it a lot and this will help us figure out what syntax to use.
+
+Let’s open our rake task in Sublime Text under lib/tasks/scraper.rake. After the puts JSON.pretty_generate result, let’s add ["postings"].first.
+
+lib/tasks/scraper.rake
+    …
+    # Display results to screen
+    puts JSON.pretty_generate result["postings"].first
+  end
+  …
+result["postings"] should give us the array of 1,000 postings, so result["postings"].first should give us the first of those postings. Let’s save and run our rake task again.
+
+Command Line
+$ rake scraper:scrape
+Great – looks like we got exactly one posting back, as we expected. Let’s try grabbing the heading of this post. Since this a hash, we can get this value by adding a ["heading"] at the end.
+
+lib/tasks/scraper.rake
+    …
+    # Display results to screen
+    puts JSON.pretty_generate result["postings"].first["heading"]
+  end
+  …
+So result["postings"].first gives us the first posting and the ["heading"] gives us the heading data for that post. Let’s save and try running this.
+
+Command Line
+$ rake scraper:scrape
+This time, we should get an error that says “only generation of JSON objects or arrays allowed”. The reason why we’re seeing this error is because we’re still using pretty_generate to display our result. That was fine before, when our result was in JSON, or hash, format. But now that we’re displaying the heading only, our result should be a string and we won’t need pretty_generate anymore. A simple puts should be enough, so let’s delete this, save, and try it again.
+
+lib/tasks/scraper.rake
+    …
+    # Display results to screen
+    puts result["postings"].first["heading"]
+  end
+  …
+Command Line
+$ rake scraper:scrape
+Perfect, looks like we got the heading we wanted. We’ll be able to use this same syntax to grab any of the other data for this post. For example, we can replace heading with body, save, and run it again.
+
+lib/tasks/scraper.rake
+    …
+    # Display results to screen
+    puts result["postings"].first["body"]
+  end
+  …
+Command Line
+$ rake scraper:scrape
+It’s a little different for location though, because location is a hash as well. Scrolling up, we’ll see that location has a few different fields, but not every post will have these fields available. For example, the locality (which is what 3taps calls a neighborhood) is missing for this specific post. So let’s go back to our code and replace body with location to get the location hash. And then we’ll add a ["locality"].
+
+lib/tasks/scraper.rake
+    …
+    # Display results to screen
+    puts result["postings"].first["location"]["locality"]
+  end
+  …
+Let’s save and run our task again.
+
+Command Line
+$ rake scraper:scrape
+I got a blank space because this first post doesn’t have a locality, so I’ll replace first with second just to show you that it works.
+
+lib/tasks/scraper.rake
+    …
+    # Display results to screen
+    puts result["postings"].second["location"]["locality"]
+  end
+  …
+I’ll save and run this again.
+
+Command Line
+$ rake scraper:scrape
+Good – there it is. Now that we know how to grab individual posting data, we can use this knowledge to populate our database of posts. Let’s go back to our text editor, comment out our puts code and write the following:
+
+lib/tasks/scraper.rake
+    …
+    # Display results to screen
+    # puts result["postings"].second["location"]["locality"]
+
+    # Store results in database
+    result["postings"].each do |posting|
+
+      # Create new Post
+      @post = Post.new
+      @post.heading = posting["heading"]
+      @post.body = posting["body"]
+      @post.price = posting["price"]
+      @post.neighborhood = posting["location"]["locality"]
+      @post.external_url = posting["external_url"]
+      @post.timestamp = posting["timestamp"]
+
+      # Save Post
+      @post.save
+    end
+
+  end
+  …
+Here, we’ve written a loop that takes each of the 1,000 or however many postings 3taps gives us, and creates a new Post object to put in our database. That’s stored in the @post variable and one-by-one, we’re filling in the columns for our database.
+
+For example, this line takes the heading field from Craigslist’s data and uses it to fill in the heading column for our database. Similarly, this line takes Craigslist’s locality field that’s stored in the location hash and uses it to fill in the neighborhood column for our database. Finally, we save this @post variable so it gets entered into our database.
+
+Let’s save and try this out.
+
+Command Line
+$ rake scraper:scrape
+We don’t see any output on the screen this time, but that’s okay because we haven’t used puts to display anything. Instead, we can see if this worked by refreshing our localhost page.
+
+Wow, it’s pretty ugly, but there we go – we’ve got a thousand new posts! Most of the columns seem to be filled in correctly, but scrolling to the right, we’ll see that there are some posts that have blank neighborhoods. That’s fine – we know that not all Craigslist posts have this neighborhood information available.
+
+We’ve just populated our database with 1,000 live Craigslist posts. In the next video, we’ll work with the data we have here to improve the UI of our app.
+
 
 3.Improve Display of Data
-Clean Up Data Formats
+Clean Up Data Formats:
 Paginate the Index Page
 
 4.Gather Detailed Data

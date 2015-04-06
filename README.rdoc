@@ -622,7 +622,249 @@ We’ve just populated our database with 1,000 live Craigslist posts. In the nex
 
 3.Improve Display of Data
 Clean Up Data Formats:
-Paginate the Index Page
+We now have a basic web app with some Craigslist posting data that we’ve loaded from 3taps. In this video, we’re going to clean up our index page with some basic styling to improve the presentation of this data.
+
+Let’s start by using Bootstrap on this table on our index page. We’ll be using the bootstrap-sass gem, so let’s open up our browser and go to the gem page. Let’s follow the instructions and copy the line here. Then, we’ll open up our Gemfile, paste it in at the bottom, and clean this up a bit. The ‘sass-rails’ gem was included in our Gemfile by default, so we can skip this step. And then we’ll add the ‘autoprefixer-rails’ gem as they recommend.
+
+Gemfile
+...
+gem 'bootstrap-sass', '~> 3.3.1'
+gem 'autoprefixer-rails'
+Let’s save and run bundle install.
+
+Command Line
+$ bundle install
+Let’s also remember to restart our Rails server.
+
+Command Line
+$ rails s
+We now need to setup our CSS and JavaScript files. Unlike the gem page, which tells us to make changes to our application.css.scss stylesheet, I’m going to create a new file in my app/assets/stylesheets directory called custom.css.scss. At the top, let’s copy these two lines of code.
+
+app/assets/stylesheets/custom.css.scss
+@import "bootstrap-sprockets";
+@import "bootstrap";
+We’ll save this and while we’re here, let’s also open the scaffolds.css.scss file that was created when we generated our scaffold and delete all this code to prevent it from conflicting with any custom CSS we write later on. It’s better to do this than to delete the file entirely, because it’ll be recreated if we generate a new scaffold in the future.
+
+app/assets/stylesheets/scaffolds.css.scss
+
+Let’s save and now go to our application.js file, where we’ll copy over the //= require bootstrap-sprockets line and paste it in underneath //= require jquery. Let’s save this as well.
+
+app/assets/javascripts/application.js
+…
+//= require jquery
+//= require bootstrap-sprockets
+//= require jquery_ujs
+//= require turbolinks
+//= require_tree .
+With Bootstrap set up, all we need to do to add Bootstrap styling to our table is go to our view page, which is under app/views/posts/index.html.erb, and change <table> to <table class="table">.
+
+app/views/posts/index.html.erb
+<h1>Listing posts</h1>
+
+<table class="table">
+  …
+Let’s save and refresh our localhost page. It’s already looking a little cleaner. Let’s also add a couple Bootstrap table options. We’ll make it so that the rows are highlighted as we hover over them with the class table-hover. We’ll also add table-condensed to make each row a little shorter.
+
+app/views/posts/index.html.erb
+<h1>Listing posts</h1>
+
+<table class="table table-hover table-condensed">
+  …
+Let’s save and reload the page. Good.
+
+Next, let’s think about what data we want to display here on the index page versus on the show page. This body field is definitely too long and it’s messing up the spacing on our table, so we’ll get rid of it. The @external_url field is also really long, so we’ll remove that as well.
+
+Let’s go to our view page and delete these two lines along with their corresponding column headings and save.
+
+app/views/posts/index.html.erb
+…
+<tbody>
+  <% @posts.each do |post| %>
+    <tr>
+      <td><%= post.heading %></td
+      <td><%= post.price %></td
+      <td><%= post.neighborhood %></td
+      <td><%= post.timestamp %></td
+      …
+Our table spacing looks a lot better.
+
+Let’s also remove these ‘Edit’ and ‘Destroy’ links and make this entire heading into a link to the ‘Show’ page. In our code, we’ll delete the column heading for these links and get rid of the ‘Edit’ and ‘Destroy’ code. To convert our ‘heading’ text into a link, we’ll add a ‘link_to’, and put a comma, followed by the route, which is ‘post’. Now we can delete the old ‘Show’ link as well.
+
+app/views/posts/index.html.erb
+<h1>Listing posts</h1>
+
+<table class="table table-hover table-condensed">
+  <thead>
+    <tr>
+      <th>Heading</th>
+      <th>Price</th>
+      <th>Neighborhood</th>
+      <th>Timestamp</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @posts.each do |post| %>
+      <tr>
+        <td><%= link_to post.heading, post %></td>
+        <td><%= post.price %></td>
+        <td><%= post.neighborhood %></td>
+        <td><%= post.timestamp %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Post', new_post_path %>
+Let’s save and refresh our page. Looks good. We can click on any of these post headings to see that it takes us to the ‘Show’ page, which means it’s working.
+
+Let’s also delete the words ‘Listing posts’ at the top and put everything in a Bootstrap container. This just adds some padding to the sides of our screen.
+
+app/views/posts/index.html.erb
+<div class="container">
+  <table class="table table-hover table-condensed">
+    …   
+  <%= link_to 'New Post', new_post_path %>
+</div>
+The last change we’ll make to the index page for now is to adjust the formatting of the ‘Price’ and ‘Timestamp’ fields. For ‘Price’, we want to display the apartment’s rent amount in dollars, so we’ll go back to our code and add the Rails helper ‘number_to_currency(’ in front and close the parentheses.
+
+app/views/posts/index.html.erb
+<tr>
+  <td><%= link_to post.heading, post %></td>
+  <td><%= number_to_currency(post.price) %></td>
+  <td><%= post.neighborhood %></td>
+  <td><%= post.timestamp %></td>
+</tr>
+Let’s save. Good. We can remove the decimal places by going back and adding a , precision: 0.
+
+app/views/posts/index.html.erb
+<tr>
+  <td><%= link_to post.heading, post %></td>
+  <td><%= number_to_currency(post.price, precision: 0) %></td>
+  <td><%= post.neighborhood %></td>
+  <td><%= post.timestamp %></td>
+</tr>
+Let’s save and check. Great!
+
+If you’re ever unsure about all the different options available for something like number_to_currency, just search it in Google. I’ll type ‘number_to_currency rails’ and click on the first link. You can see that this api.rubyonrails.org site shows us the syntax for number_to_currency, which is to write number_to_currency followed by the number we want to format followed by any number of options we want to include. Here’s the precision option that we’re using and there are even some examples below.
+
+Going back to our table, we can see that the ‘Neighborhood’ field is pretty tough to read. These are the locality code names that 3taps gave us, and we’ll skip this for now, but in a later video we’ll see how to convert these to more user-friendly names.
+
+Finally, we have the ‘Timestamp’ field. This number is shown in Unix time, so we’ll want to convert this to a more easily understandable format. We’ll go to our code and write Time.at( and close our parentheses. Time.at does exactly what it sounds like – given a Unix time value, it tells us the normal date and time. We’ll also need to add a .to_i here because the timestamp field is stored in our database as a string. Since Time.at needs an integer, .to_i does the conversion for us.
+
+app/views/posts/index.html.erb
+<tr>
+  <td><%= link_to post.heading, post %></td>
+  <td><%= number_to_currency(post.price, precision: 0) %></td>
+  <td><%= post.neighborhood %></td>
+  <td><%= Time.at(post.timestamp.to_i) %></td>
+</tr>
+Let’s save and go see. Okay, our timestamp is now shown with the date, the time, and the timezone. But instead of displaying it in this format, we can just write how long ago the post was updated. We’ll write time_ago_in_words( and close our parentheses.
+
+app/views/posts/index.html.erb
+<tr>
+  <td><%= link_to post.heading, post %></td>
+  <td><%= number_to_currency(post.price, precision: 0) %></td>
+  <td><%= post.neighborhood %></td>
+  <td><%= time_ago_in_words(Time.at(post.timestamp.to_i)) %></td>
+</tr>
+Let’s save and see the change. It now says ‘3 days’. If it were closer to the time when the post was updated, it might say ‘5 hours’ or ‘33 minutes’ instead. I want to add the word ‘ago’ at the end, so it says ‘3 days ago’. We’ll go back to our code and since we’re trying to combine Ruby code with a string, we’ll use a technique called string interpolation. Let me show you how it works.
+
+We can’t just write ‘ago’ at the end of this because then our app will think it’s Ruby code. And if we put this all in double quotes, then our app will think we want our timestamp to literally be ‘time_ago_in_words’ etc. With string interpolation, we can put a hashtag in front of our Ruby code and surround it in curly braces. This way, our app knows which parts are code and which parts are just strings. Anything inside the curly braces is interpreted as code.
+
+app/views/posts/index.html.erb
+<tr>
+  <td><%= link_to post.heading, post %></td>
+  <td><%= number_to_currency(post.price, precision: 0) %></td>
+  <td><%= post.neighborhood %></td>
+  <td><%= "#{time_ago_in_words(Time.at(post.timestamp.to_i))} ago" %></td>
+</tr>
+Let’s save and see if it worked. Great!
+
+Finally, let’s rename the column header. We’ll call it ‘Last Updated’, save, and refresh.
+
+app/views/posts/index.html.erb
+…
+  <th>Heading</th>
+  <th>Price</th>
+  <th>Neighborhood</th>
+  <th>Last Updated</th>
+…
+Through our Bootstrap styling, data formatting, and removal of a couple columns, our table looks much better than it did at the start of this video. In the next video, we’ll continue working on this index page by adding pagination so we don’t need to load all 1,000 posts here at once.
+
+Paginate the Index Page:
+Here’s what our index page looks like now. What we’ll do in this video is add pagination to divide these 1,000 posts into multiple pages.
+
+Whenever you want to add a new feature on your site, it helps to know which gems are available so you can avoid having to write all the code from scratch. A great resource for discovering and comparing gems is a site called The Ruby Toolbox.
+
+For example, if we want to see our options for setting up pagination, we can search ‘ruby toolbox pagination’. We’ll click on the link to go to the Ruby Toolbox website. Ruby Toolbox organizes gems into different categories, one of which is pagination. The site ranks the gems in that category by popularity, which it calculates using a combination of gem downloads and activity on the gem’s GitHub page.
+
+So here we can see that there are two main gems, will_paginate and kaminari, that are equally popular for pagination. If we want, we can click on the links to check out each gem’s documentation and compare the setup instructions and options that each gem comes with. In this case, I’ve used both of these before and they’re pretty similar, so let’s just go with the will_paginate gem.
+
+To install the gem, we’ll copy this line and paste it into our Gemfile.
+
+Gemfile
+…
+gem 'will_paginate', '~> 3.0.6'
+We’ll save, run bundle install, and restart our Rails server.
+
+Command Line
+$ bundle install
+Command Line
+$ rails s
+Now setting up this gem is pretty simple. There are only two things we have to do. First, we need to use this .paginate method or even better, the .paginate method with the option to specify the number of posts per page. Let’s copy this last part, open up our controller file, and paste it in after Post.all. If we want, we can change this 30 to any other number, but 30 posts per page sounds about right to me.
+
+app/controllers/posts_controller.rb
+…
+def index
+  @posts = Post.all.paginate(:page => params[:page], :per_page => 30)
+end
+…
+Let’s save this.
+
+The second thing we need to do is put this <%= will_paginate @posts %> line in our view page. Let’s copy this, go to our app/views/posts/index.html.erb file and paste it at the bottom, right before the <br>. We don’t even need to customize this at all because this sample code has @posts, which happens to be the same name as the variable that we’ve defined in our controller. Remember that whatever variables we define in our controller in the index section will be available to our corresponding view page, index.html.erb.
+
+app/views/posts/index.html.erb
+…
+  </table>
+
+  <%= will_paginate @posts %>
+
+  <br>
+
+  <%= link_to 'New Post', new_post_path %>
+</div>
+Let’s save this and see it in our browser. There we go. The page numbers appear at the bottom where we placed our line of code. We can go to the next page by clicking on ‘2’ or ‘Next’, and we can go to the last page by clicking on ‘34’. Great!
+
+The will_paginate gem is all set up now, but let’s make the styling look consistent with our Bootstrap table by using a second gem called will_paginate-bootstrap. Let’s Google this and go to the gem’s GitHub page. Let’s follow the installation instructions and copy this line and paste it into our Gemfile.
+
+Gemfile
+…
+gem 'will_paginate-bootstrap'
+We’ll save, run bundle install, and restart our Rails server.
+
+Command Line
+$ bundle install
+Command Line
+$ rails s
+Now to set it up, we only need to change a single line. In our index.html.erb file, where we wrote <%= will_paginate @posts %>, we need to add a , renderer: BootstrapPagination::Rails. Let’s copy this, go to our index.html.erb file, and paste it in here. And save.
+
+app/views/posts/index.html.erb
+…
+  </table>
+
+  <%= will_paginate @posts, renderer: BootstrapPagination::Rails %>
+
+  <br>
+
+  <%= link_to 'New Post', new_post_path %>
+</div>
+We’ll reload our localhost page and look, we’re done.
+
+Our index page is now looking pretty good, with nice formatting and Bootstrap-styled pagination. We’ll hold off on improving our show page and instead in the next video, we’ll see if we can go back and grab more detailed information on these Craigslist posts from 3taps, like the number of bedrooms and bathroom.
+
 
 4.Gather Detailed Data
 Scrape Apartment Details

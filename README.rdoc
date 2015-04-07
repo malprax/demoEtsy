@@ -5737,3 +5737,970 @@ Finally, I’d love to hear from you! Email me at alex@baserails.com and tell me
 
 
 
+
+
+#Browse Our Feature Library
+Back End Features
+Add a Facebook 'Like' Button
+Once you’ve launched your site, your next challenge is to let the world know about it. One of the lowest-effort ways to do that is to give your users the ability to spread the word on Facebook. In this video, I’ll show you how to add buttons to your site for people to like or share on Facebook.
+
+First you should go to this URL: https://developers.facebook.com/docs/plugins/
+
+Here you can see the social plugins Facebook offers for developers to add to their own websites. I’ll click on the first one, the Like button. Now I’ll fill in the form to select my own customizations. First, let’s plug in the URL that the users will be Liking. Since I just completed my Etsydemo application, I’ll copy over that URL and paste it in here. I can optionally set the width of the plugin, but I’ll leave it blank to use the default. Facebook offers a few different layout options. For example, the box count shows the number of Likes in a box while the button count shows the number of Likes right next to the button. Finally, the button option will show the button only, without showing the number of Likes. I’ll go with the button count option. I can also toggle between Like and Recommend. I’ll leave it as Like here. And finally, I can decide whether to display profile pictures of the user’s friends who have already Liked the page, and I can decide whether to include an additional Share button.
+
+Once I’ve got all my settings right, I’ll click “Get Code” and Facebook will tell me to do two things. First, I need to add some code to my site so my app can communicate with Facebook. I’ll copy over this code, and in my Sublime Text I’ll go to my app/views/layouts/application.html.erb file. Right below my <body> tag, I’ll paste it in. I’ll tab it in one.
+
+Leaving it like this is fine, but my application layout file can start to feel cluttered if I’m connected with a lot of APIs, so I prefer to hide this away in a partial file. If you’ve gone through the Etsydemo course, you’ve seen this before. I’ll create a new file in my layouts folder called _facebook.html.erb. The underscore tells Rails that this is a partial file. Inside my new file, I’ll paste in my Facebook code. To make sure this gets included in my application layout file, I’ll need to add the following line. So first I’ll save here, and back my in my layout file I’ll write: <%= render 'layouts/facebook' %> and I’ll save. Great – that looks a lot cleaner now.
+
+Lets go back to our Facebook instructions. The next step is to paste the second piece of code wherever we want our Like button to appear. Since I want mine to appear at the bottom of the home page, I’ll copy this and go to my app/views/listings/index.html.erb file. I’ll add a <br> tag at the bottom, and I’ll paste this code in at the bottom of the file. Let’s save and see how it looks in localhost. Looks pretty good, and you can see when I click it that the number changes from 0 to 1. I can also un-Like it by clicking the x.
+
+Although the button is functional, it could look a lot better if we centered it over here. During the Etsydemo course, I already defined a CSS class called center. We can see that under app/assets/stylessheets/custom.css.scss. And here we have the center class. So I’ll go back to my index.html.erb code, and I’ll wrap my Like button in a <div class="center">. I’ll tab this in, and I’ll close the <div> tag here. After saving, we can we go back to see how it looks. Much better! This will look even better with a Twitter button right next to it, so make sure you check out the other BaseRails video showing how to do this.
+
+
+Add Categories - Part I 
+Add Categories - Part II
+Add Categories - Part III
+Divide Your Content With Pagination
+
+#Deployment
+Monitor Your Site and Load Pages Faster
+It’s a great feeling to finish coding your app and deploy it live for everyone in the world to visit. However, you’ll want to know immediately if your website is down, so it helps to use a website monitoring service that can send you instant email notifications. And if your hosting your app for free on Heroku, doing this will have the side benefit of eliminating any long delays when you’re loading your page for the first time in a while.
+
+In this video, I’m going to introduce to you to an amazing free service called “Uptime Robot” that will not only monitor your app, but also get rid of this annoying Heroku loading delay. If I visit an app that’s hosted for free on Heroku, it can sometimes take a long time to load. I’ll use an app I created called “Six Spoons” to demonstrate the delay I’m referring to. I’ll go to sixspoons.herokuapp.com. And as you can see, it’s taking a while. As we wait for it to load, let me explain to you why this is happening. If a website hosted for free on Heroku is inactive for more than an hour, the app will go to sleep. As soon as the next user visits the site, it takes around 30 seconds to awaken the app again. This isn’t a problem if you’re getting at least one visitor per hour, but when you’ve just deployed your app, you wouldn’t want your early users to deal with a 30 second delay each time they visit. Uptime Robot solves this problem by automatically visiting your site once every five minutes. This prevents your app from going to sleep and therefore eliminates the delay that users experience. There are actually a few options when it comes to website monitoring, but I recommend Uptime Robot because it’s free, it does its job, and it only takes a few minutes to setup. In fact, it’s one of the first things I’ll do after deploying any website.
+
+Let me show you how it works. I’ll go to uptimerobot.com. And after you sign up, you’ll be sent an email to confirm your account. After you’ve done that, you’ll be able to login. I’ll login with alex@baserails.com. And now to setup monitoring for your app, just click on “add new monitor.” I’ll select HTTPs as my monitor type. You’ll then be able to choose a friendly name to be displayed in your dashboard. I’ll put “SixSpoons.” And now enter your website’s URL. So I’ll copy this, you’ll notice that it’s HTTPs. And I’ll paste it in here. And now select your monitoring interval. I’ll leave this at the default five minute interval. A really interesting feature of Uptime Robot is that it can even work for websites that require you to login. If you want, you can fill in a username and password to give access to Uptime Robot. Finally, I recommend checking the box here so you’ll be sent an email notification whenever Uptime Robot sees that your site is down. Now click “create monitor” to finish. If I close this dialog box, I’ll see that SixSpoons has now been added to my dashboard. In just a few minutes, Uptime Robot will start monitoring whether SixSpoons is up or not. With monitoring setup, you’ll know immediately if any tinkering you’ve done with your code has caused the website to break, and you’ll never need to deal with Heroku’s 30 second delay again. Now if I open a new tab, and I go back to SixSpoons, you can see how quickly it loads. Uptime Robot will make sure all your users will able to experience this fast load time.
+
+
+#Front-End Design
+Add Glyphicons to Your Buttons
+One of the little front end things that can go a long way toward making your site look more professional is to incorporate glyphicons. Glyphicons are little icons or symbols that you can easily add to dress up buttons, forms, or other elements. In this video, I’ll show you how to add a glyphicon to a button. One of the main reasons why its easy to work with glyphicons is that many of them are already available through bootstrap. You can find them by going to the bootstrap website at getboostrap.com. Here you can go to the components tab on top. You’ll see there are all kinds of glyphs to choose from. Ranging from a star, to a trash icon, even to things like a shopping cart. If these aren’t enough, you can find even more on the glyphicons website.
+
+If we go back to the bootstrap page and we scroll down, you can see that bootstrap provides some documentation about how to use glyphicons in a button. But our process is a little different, because our code is a mostly written using rails helpers like “link to”, not straight HTML. I’ll assume that you finished at least half of the Etsy demo course, but as long as you have a good understanding of how the “link to” helper works, you should be fine. Lets start with a newly completed Etsy demo application. As you can see in my localhost, I already have a new listing button on the home page where I’d like to add a glyphicon. I’ll go to my view page code under app/views/listings/index.html.erb. You can see the code that produces the button here <%= link_to "New Listings", new_listing_path, class: "btn btn-primary", data: { no_turbolink: true } %> where it says “link_to,” the name of the link, the route that the link directs to, the class that we need to add to create the bootstrap style button, and finally an additional option that turns off the rails turbo links feature. Don’t worry if you don’t know what that is. Adding a glyphicon is simple. I’ll first comment out this line of code and I’ll begin writing my own. I’ll write: <%= link_to new_listing_path, class: "btn btn-primary", data: { no_turbolink: true } do %>
+
+On the next line, I’ll tab it over and I’ll write: <i class=""> 
+And here I’ll need the name of the specific glyphicon I want to add. So going back to the bootstrap page, if I want to add, say, the “plus” for a new listing, I’ll copy over this glyphicon glyphicon plus code and I’ll paste it in here. Now I’ll close off this </i>, I’ll put a space, and now I need to put the text I want on the button, in this case its going to be “new listing”. On the next line, I’ll put an <% end %> statement to close out the “do” I had from earlier. If I save, I can now go to my localhost and refresh the page. You can see the glyphicon has now been added. Don’t go overboard with using glyphicons, but its pretty amazing how much of a difference these small but nicely designed symbols can make on your site.
+
+/app/views/listings/index.html.erb
+...
+<%= link_to new_listing_path, class: "btn btn-primary", data: { no_turbolink: true } do %>
+  <i class="glyphicon glyphicon-plus"></i> New Listing
+<% end %>
+...
+
+
+#Internationalization
+Part1: Display Non US Currency and date standard
+Part2: Set default standards for non US country
+Part3: Switch between standards for multiple countries
+Part4: Translate Your Content Into Multiple Languages
+
+
+Web Scraper Course Page
+1.Introduction
+Intro to web scraping
+Hey there! Welcome to the BaseRails web scraping course. In this introduction video, we’ll talk about what web scraping is, why it’s incredibly useful, and get a quick look at what we’ll be working on during the rest of this course.
+
+All right, let’s start from the top – what is web scraping? It’s what we use if we want to gain access to the vast amounts of data on the Internet. For example, a site like Amazon stores a ton of product data in its massive database. Unfortunately, we don’t have permission to just open up their database and explore around. We’re limited to viewing a little bit at a time through the search and browse functionality of the Amazon website. We can see the detailed data they have on an individual product, or some basic information for up to 20 products at a time. But there’s no way for us to aggregate all the data in one place unless we manually go through each page, copy the information we see into a database, and do this many, many times.
+
+That’s where web scraping is really useful. With web scraping techniques, we can program our computer to visit many different Amazon pages at once, collect the data we want, and store it for us. Once we have this data available in our own personal database, there’s so much more that we can do. We could analyze the data to figure out things like the average price of HDTVs or identify the highest rated products on Amazon. We could even build a web app around this data. In fact, if we go to toppp.com, we’ll see that someone did just that. This site sorts the products available on Amazon so that users can browse the highest rated products in specific categories, or even overall. Users that click a product get taken directly to Amazon. Any purchases they make generate money for toppp.com through Amazon’s affiliate program. You can see how with web scraping and a simple interface, you can provide immediate value for your users.
+
+So now that we’ve seen the high level picture of what web scraping is and why it’s useful, for the rest of this video, let’s quickly run through the project that we’ll be working on. After installing the software we need, we’re first going to learn the basics of web scraping by collecting data from Wikipedia. Once we have this under our belt, we’ll turn our attention to this course’s main project. We’re going to write a script to visit many different pages of the vacation rental site, Airbnb, and scrape information on the listings that we find, like the heading, location, and cost per night. We’ll then have our script store this info in our own Excel spreadsheet where we can play around and analyze the dataset. What you choose to do with the data that we retrieve is up to you!
+
+Okay, in the next video, we’ll get started by learning to find the information we want by searching through the HTML of a Wikipedia page.
+
+2.Identify and collect data
+find data within html
+In this video, we’ll be scraping a Wikipedia article on players and teams in the NBA. We’ll walk through the process our program will follow by manually stepping through some HTML code to find the pieces of data we need. All of this will lay the groundwork for us to start coding our script next time.
+
+Let’s start by going to wikipedia.org and searching ‘List of current NBA team rosters’. This page basically consists of a table of contents on top, followed by a bunch of tables, one for each team in the NBA. All the information we see on this page is available to be scraped – that’s because every webpage is built using HTML and we’ll be able to find all of this data in the HTML code.
+
+If you’re unfamiliar with HTML, it’s the code that forms the backbone of every website on the Internet. The structure of each page – like the number of rows and columns in this table, and the text that goes in each cell – this is all determined by the code behind the page.
+
+Now HTML isn’t very friendly to the human eye. We can see what it looks like from within our Chrome browser by right-clicking and selecting ‘View page source’. It’s a mess. But if we look closely, we’ll see some parts that start to look familiar. For example, if we scroll down, we’ll see a section with “Eastern Conference”, “Atlantic Division”, “Boston Celtics”, etc. This part of the HTML code is used to create the table of contents at the top of the page.
+
+The most important thing to remember when reading HTML is that it’s very structured, even if it seems like a mess at first. So looking at the code for the “Boston Celtics”, we’ll see <li something something>, <a something something>, <span something something>. HTML uses these things called tags to annotate, or mark up, the text so that the computer knows how to display it to the user. This <li> tag tells our browser that this is an element of a list, the <a> tag makes “Boston Celtics” into a link, and the <span> tag is used to add some formatting to specific sections of the page.
+
+And remember that every opening tag will have a matching closing tag. So the <li> tag has a corresponding </li> tag, and the <a> tag has a </a> tag, and the <span> tag has a </span> tag. Here, the ‘/’ just means ‘close’. HTML becomes a lot easier to decipher when you start recognizing these matching opening and closing tags.
+
+Learning to read HTML is important because we need to get good at finding the data we want that’s scattered throughout this code file. For example, if we wanted to pull out the names of every team in the NBA, we would need to identify the patterns that will help us find the data we need. In this case, it looks like the common thread is that they all fall on a line that starts with the tag <li class="toclevel-3 something">. If we type Command-F (or Ctrl-F if you’re on Windows), we can search li class="toclevel-3 and we’ll see that there are 30 results, which is perfect because there are 30 teams in the NBA.
+
+If we had searched li class="toclevel-3 tocsection-3", we’d be too specific, capturing “Boston Celtics” and missing out on the other 29 teams. And if we had searched li class="toclevel, we’d have captured the conference names and division names in addition to the team names. The key is to find patterns that capture data at the specific level of detail that we want.
+
+Essentially, web scraping boils down to the process of automating this Command-F routine so that a computer can search for the keywords we want and store them in a database for us.
+
+Let’s try another example. This time, let’s grab the names of every player listed on an NBA roster. While we could search our HTML for Bass, Brandon, this time we’ll use a different approach. Let’s right-click on the text we want and choose “Inspect Element”. On the left, we’ll see the exact HTML that was used to render this text. It looks like the Bass, Brandon is nested inside a <td style="text-align:left;">, so we’ll go back to our source code and search <td style="text-align:left;">.
+
+Your number may be higher or lower than mine, but I got 447 results. Since each team should have around 15 players, with 30 teams total, 15 times 30 is 450 so we’re definitely in the right range. Good – it looks like our search term was just specific enough.
+
+Now that we’ve had a little practice with reading HTML code and using patterns to find the information we need, we’re ready to move on to the next video, where we’ll start writing a program to automate what we’ve done so far by hand.
+
+create and run script
+In the last video, we looked at a Wikipedia page and identified patterns in the HTML code to find important information, like the names of NBA teams and players on the roster. This time, we’ll use the patterns that we’ve identified to write a Ruby script to grab all this data for us.
+
+Let’s start by opening up Sublime Text. Let’s save this file. I’m going to save this in my root directory as wikipedia_scraper.rb. Your root directory is whichever folder shows up by default when you open your Command Line.
+
+What we’re going to do is first store all the HTML from the Wikipedia page onto our computer. Then, we’re going to pull out the specific information we want by selecting the right HTML tags.
+
+I’ll try to always type out some code first, and then explain what I’m doing. If you’re new to Ruby or just new to programming in general, I recommend not worrying if you don’t understand everything 100% the first time around. This is one of those things where as you gain more experience, you’ll start to see which concepts are important to understand and which ones you can just accept as fact.
+
+Let’s type some code:
+
+wikipedia_scraper.rb
+require 'open-uri'
+require 'nokogiri'
+ 
+url = "http://en.wikipedia.org/wiki/List_of_current_NBA_team_rosters"
+page = Nokogiri::HTML(open(url))
+Okay, let me explain what we’re doing here. At the top, we have these two require statements. Open-uri and nokogiri are examples of two Ruby gems. Gems are prepackaged code files that allow us to use powerful features that others have already written and shared. This saves us a ton of time because we don’t need to build these features ourselves from scratch.
+
+The open-uri gem lets us access the content from different URLs from inside our text editor. It was installed by default when we installed Ruby so we just need to write require to use its features.
+
+Nokogiri, which is named after a type of precise Japanese saw, is a gem that helps us read and search the HTML code of a webpage. Unlike open-uri, nokogiri was not installed by default, so in order to use it, we need to open our Command Line.
+
+From here, type ‘gem install nokogiri’ and hit Enter. This process might take a while, but we’ll be able to use Nokogiri’s features from within our script.
+
+Command Line
+$ gem install nokogiri
+*If you’re having trouble installing nokogiri, take a look at this link*
+
+Going back to our code, we’re now storing our Wikipedia article’s address in a variable called url. Variables are words that store information so we can access it later on by simply calling that specific word.
+
+And on the next line, we’re using both nokogiri and open-uri to open the URL from above and store the HTML code in another variable called page. I know that’s a lot to digest, so don’t worry about syntax for now (things like why we use two colons here) and instead focus on understanding the high-level steps that we’re doing.
+
+Finally, we’ll add one more line: puts page. puts (which stands for ‘put string’) will display the HTML code that’s stored in the page variable on our screen. Lets save.
+
+wikipedia_scraper.rb
+require 'open-uri'
+require 'nokogiri'
+ 
+url = "http://en.wikipedia.org/wiki/List_of_current_NBA_team_rosters"
+page = Nokogiri::HTML(open(url))
+
+puts page
+Together, the code we’ve written makes up our script which we can run through our command line. We’ll need to navigate to the location where our wikipedia_scraper.rb is stored. Mine is saved in my root directory, alexyang, so I’ll type ruby wikipedia_scraper.rb to run the script and hit ‘Enter’.
+
+Command Line
+$ ruby wikipedia_scraper.rb
+What is all this? If we look back at our script, we’ll see that we wrote puts page, which displays all the HTML code that’s stored in the page variable. This is the entire content of the Wikipedia page in HTML format. In our Command Line, we can scroll up and see some <li> tags and <div> tags, so we know that we’re looking at HTML.
+
+Now while this is difficult to read, we’ve actually taken a really important step. With all the HTML code stored in the page variable, we can now use nokogiri to pull out only the specific data we want. We’ll learn how to do that in the next video.
+
+3.scrape web data
+scrape wikipedia tables
+Last time, we were able to display the HTML code of our Wikipedia page in our command line. In this video, we’ll learn how to scrape specific pieces of information by selecting the right HTML tags that contain the information we want.
+
+Let’s go back to our code and change puts page to puts page.css('a').
+
+wikipedia_scraper.rb
+require 'open-uri'
+require 'nokogiri'
+ 
+url = "http://en.wikipedia.org/wiki/List_of_current_NBA_team_rosters"
+page = Nokogiri::HTML(open(url))
+
+puts page.css('a')
+Let’s save and run our script again.
+
+Command Line
+$ ruby wikipedia_scraper.rb
+This time, rather than see all the HTML, we’ll see only the sections with an <a> tag. In HTML, the <a> tag is used whenever we want to add a link so this is really a list of every hyperlink on the page. For example, we can see there’s a link to the ‘About Wikipedia’ page and here’s another to the ‘Wikimedia Foundation’. Back in our browser, we’ll see these links at the bottom of the page. And from looking at our script, it was just this .css('a') that allowed us to select all the <a> tags.
+
+Let’s revise our script again to scrape the names of all the NBA teams. If you remember from last time, each team name can be found on a line that starts with <li class="toclevel-3…, so we’ll replace .css('a') with .css('li.toclevel-3').
+
+wikipedia_scraper.rb
+…
+puts page.css('li.toclevel-3')
+In English, this code means find every <li> tag with a class of toclevel-3. The dot just means class. So this time we aren’t looking for all <li> tags, just those with the toclevel-3 class, which we know corresponds to the NBA team names. Let’s save and run this script again.
+
+Command Line
+$ ruby wikipedia_scraper.rb
+This time, we got a list of just the lines of code containing the NBA team names. Going back to our browser, we can look at the page’s HTML code and see that our list matches.
+
+Let’s now try doing the same thing for the list of NBA players. We know from last time that each name is on a line that starts with <td style="text-align:left;">. The syntax for matching this in Ruby is .css('td[style="text-align:left;"]').
+
+wikipedia_scraper.rb
+…
+puts page.css('td[style="text-align:left;"]')
+Why do we use this bracket format here instead of the period from the last example? The rule of thumb is that if it’s a class, you should use a .. If it’s an id, you should use a #. And if it’s anything else, you’ll need to use a []. The syntax here is TAG_NAME[ATTRIBUTE_NAME="ATTRIBUTE_VALUE"].
+
+Let’s save and run our script again.
+
+Command Line
+$ ruby wikipedia_scraper.rb
+We have a list with a ton of NBA names, some of whom you might recognize, like Kobe Bryant, Chris Paul, and Blake Griffin. But let’s make this a little easier to read by displaying just the player’s name without any of the surrounding HTML. To do that, we’ll go back to our script and add a .text at the end.
+
+wikipedia_scraper.rb
+…
+puts page.css('td[style="text-align:left;"]').text
+.text is a special method in Ruby that takes a line of HTML and pulls out the text from the code. For example, in this line of HTML, the words Bass, Brandon are the only part that are not inside an HTML tag. Let’s save and try it again.
+
+Command Line
+$ ruby wikipedia_scraper.rb
+That’s sort of what we wanted. Only the text names are appearing now, but there aren’t any line breaks in between.
+
+A way we can print each name on its separate line is to run our code through a loop. A loop is a sequence of instructions that gets continually repeated until it finishes or when we tell it to stop after a certain point.
+
+Let’s write our first loop. We’ll get rid of puts and delete .text and write .each do |line| followed by puts line.text and then end.
+
+wikipedia_scraper.rb
+…
+page.css('td[style="text-align:left;"]').each do |line|
+  puts line.text
+end
+The .each here is a special Ruby method just like .text. If we have a list of many things, then the .each combined with do and the variable line creates a loop so we can run the same process for every item on the list. In our case, we have a list of many lines of HTML. And for each of those lines, we’re going to run puts line.text, which will display only the text name instead of the entire HTML line. Finally, the word end means that our loop is done.
+
+Note that I chose to name my variable line here because it describes what our list contains, lines of HTML code, but I could just as easily replace these two @line@s with something else, like code or i or even potato.
+
+The reason using this loop will add line breaks after each name is because the function puts always prints on a new line. Before when we were just running puts once, everything showed up on the same line. Now that we’re running through a loop hundreds of times, each name is being printed on its own line.
+
+This is a lot to digest. In just 3 lines of code, we’ve learned about variables, methods, functions, and loops. It will take a while before the syntax will start to make sense, but when we continue working through this course, you’ll see the same concepts repeated over and over again. This will help you learn to read code, which the first step towards writing code of your own.
+
+Let’s save and run this script again.
+
+Command Line
+$ ruby wikipedia_scraper.rb
+There we go. We just scraped the names of every player listed on an NBA roster. Wikipedia even gives us these C’s and S’s, which denote whether that player is a captain of the team or currently suspended.
+
+Although this was a pretty simple example, it shows the power of the Nokogiri gem in scraping webpages. There’s so much more that you can do in terms of selecting HTML tags and narrowing your search to specific classes, ids, and other data attributes. We’ll see more of that in the next video, as we begin our main project of scraping the Airbnb platform.
+
+scrape airbnb listings
+Last time, we got some practice reading HTML and scraping information from Wikipedia. Now let’s put those skills to use and as a more practical example, let’s take a look at scraping Airbnb. For those of you who are unfamiliar, Airbnb is an online vacation rental platform. Hosts list their properties on the site for travelers to book as an alternative to staying in an expensive hotel.
+
+For example, if we wanted to see the available listings in Brooklyn, we would type it in the search bar, select Brooklyn NY, United States, and hit ‘Search’. On the left, we have a map displaying the locations of the listings and on the right, we’ll see a list with information for those same listings.
+
+Now when we set out to scrape data from a site, it’s important to be really observant and get a sense for how the site is structured. We have to look at things like what data is useful, which pages contain that data, the structure of the URLs, and so on.
+
+Let’s start with the data that’s available to be scraped. For each listing on the right, it looks like they all follow the same format. We can see the daily rate, the heading, the type (whether it’s a private room or an entire home), the number of reviews, and the location. We can also see a bunch of images of the listing as well as an image of the host.
+
+This data could be really useful if we wanted to run any kind of analysis. For example, let’s say we were looking to put up our own listing and wanted to see the average pricing for private rooms available in our Brooklyn neighborhood of Greenpoint. By the end of this course, we’ll be able to analyze the data we’ve scraped and figure out how to price our listing.
+
+We could also use this data to create a web app based on the same data set, but with an improved or different user experience. Sort of like how the site Hipmunk offers a new way to search for flights or how SeatGeek created a better way to buy tickets to live events.
+
+Let’s turn our attention to Airbnb’s URL structure. We have airbnb.com/s/Brooklyn--NY--United-States?source=bb. If I had to guess the format, I’d say that the s stands for ‘search’, followed by / and then the location, but I’m not sure about this source=bb part. Let’s try deleting that from the URL and hitting ‘Enter’. The page appears to be the same, so since the source=bb doesn’t seem to affect anything, we’ll just leave it out. Given this format, we should be able to scrape listings from any location, as long as we replace Brooklyn--NY--United-States with the location of our choosing.
+
+Now that we know the URL we want to scrape, let’s remember to check Airbnb’s scraping policies. This is something we’ll need to do before we scrape any website to make sure we’re not violating any of its rules. To check this, most sites have a page called robots.txt that sets what its scraping policies are. On the other hand, if a site you’re interested in scraping doesn’t have this file, that means you should be fine to go ahead.
+
+For Airbnb, we’ll go to airbnb.com/robots.txt and we’ll see a pretty cool ASCII image of their logo at the top. The way to read a robots.txt file is to first check the User-Agent and then see which pages on the site are Allowed or Disallowed from scraping. Here, the asterisk after ‘User-Agent’ means that the rules below apply to everyone. But every site can set different policies for different people. For example, Airbnb could choose to give greater permission to Googles’ scrapers (which it uses to index the Internet) versus other people trying to scrape their site.
+
+The URL that we want to scrape, /s/Brooklyn--NY--United-States, doesn’t show up under either “Allow” or “Disallow”. Since it was omitted, we should be able to safely scrape this page.
+
+Ok, let’s start writing our script. We’ll open Sublime Text and save this new file. I’ll call mine airbnb_scraper.rb and save this in my root directory, ‘alexyang’, but you can save this anywhere. In this new file, let’s write the following. I’ll take a moment to add some comments and then briefly explain what we’re doing.
+
+airbnb_scraper.rb
+require 'nokogiri'
+require 'open-uri'
+ 
+# Store URL to be scraped
+url = "https://www.airbnb.com/s/Brooklyn--NY--United-States"
+ 
+# Parse the page with Nokogiri
+page = Nokogiri::HTML(open(url))
+ 
+# Display output onto the screen
+puts page
+This code should look familiar as we wrote a similar one for scraping the Wikipedia page of the NBA roster. I’ll go over each line again so you can begin to recognize the patterns.
+
+These first two lines give us access to the scraping features of the nokogiri and open-uri gems. We’re storing the address from the page we’re scraping in a variable called url. We’re doing this so that if we decide to change the page we want to scrape later on, we’ll only need to change this single line of code. Now we’re handing off this URL for Nokogiri to read and all of the HTML of the page will be stored in the page variable. Finally, at the bottom, we’ll display the data we scraped on our screen.
+
+These #s are a way for us to write comments to ourselves or other developers. The # just lets our computer know to ignore the text that comes after it on the same line. Since our script will eventually get to be pretty long, I’m using these comments to remind us what each line of code does.
+
+Let’s try this out. To run this script, we’ll head to our command line and make sure we’re in the right folder. Since I placed my script in my root directory, ‘alexyang’, I can just run ruby airbnb_scraper.rb directly from here.
+
+Command Line
+$ ruby airbnb_scraper.rb
+Okay, like last time with Wikipedia, we got a ton of HTML. This is the HTML code from the Airbnb search results for Brooklyn.
+
+This is a lot of information so instead of displaying the entire page, let’s scrape just the name of each listing. If we go to back to the Airbnb site and right-click on the first listing name and hit “Inspect Element”, we’re taken to the HTML of the page.
+
+Let’s think about the HTML selector we would use to get data for all the listing names. If we scrape this <div> with title=... we’d only scrape this one listing because the name is too specific. And if we scrape just class= "h5", we’d get all the HTML content with a header size of 5, which is probably too broad. But if we use the two classes h5 and listing-name together, that might work. In web scraping, it’s often a trial-and-error process to find the HTML selectors that fall in a sweet spot, not too general and not too specific, so they can grab the information we want. Let’s try this out.
+
+We’ll look at the full HTML code by right-clicking and selecting ‘View Page Source’. Now let’s type Command-F or Control-F and search h5 listing-name. It looks like it’s finding the names of the listings. It also says it found 18 matches, and if we scroll down to the bottom of the search results page, we’ll see that that matches exactly. Great – it looks like this selector works.
+
+Now let’s go to our Sublime Text and write:
+
+airbnb_scraper.rb
+…
+# Display output onto the screen
+puts page.css('div.h5.listing-name')
+This code just means find and display every <div> tag with the two classes h5 and listing-name. We’ll need multiple periods when we select for two or more classes at once.
+
+Let’s save and run it to see the results.
+
+Command Line
+$ ruby airbnb_scraper.rb
+Great – we can see how the listings’ names match the same ones on Airbnb.
+
+Let’s now write a loop to display just the listing name without the HTML, with each on a separate line.
+
+airbnb_scraper.rb
+…
+# Display output onto the screen
+page.css('div.h5.listing-name').each do |line|
+  puts line.text
+end
+This is the same loop we ran earlier for the Wikipedia page of NBA players. This time, the HTML selectors are different because they’re targeting the Airbnb listing names. Like last time, the .each do |line| creates the loop and we’re using the .text method to display just the listing name itself without any of the HTML.
+
+Let’s save and run this again.
+
+Command Line
+$ ruby airbnb_scraper.rb
+There are 18 listings here and the text is the same, which means we grabbed the right HTML selectors.
+
+Let’s go ahead and scrape the rest of the categories on this page. Back on Airbnb, we can right-click on the price and select “Inspect Element”. This <span> tag with the two classes h3 and price-amount seems promising.
+
+In our code, let’s write:
+
+airbnb_scraper.rb
+…
+# Display output onto the screen
+page.css('div.h5.listing-name').each do |line|
+  puts line.text
+end
+
+puts page.css('span.h3.price-amount')
+Let’s save and run this.
+
+Command Line
+$ ruby airbnb_scraper.rb
+We now see all the HTML code corresponding to the listing prices, but like we did last time, let’s write a loop to run through each line of code and display just the number on its own line.
+
+airbnb_scraper.rb
+…
+# Display output onto the screen
+page.css('div.h5.listing-name').each do |line|
+  puts line.text
+end
+
+page.css('span.h3.price-amount').each do |line|
+  puts line.text
+end
+We’ll save and re-run our script.
+
+Command Line
+$ ruby airbnb_scraper.rb
+Good – we have 18 prices listed and they correspond with the listing prices on the Airbnb site.
+
+Let’s do the same thing for the listing’s details. We’ll ‘Inspect Element’ and use the <div> tag with all three of these classes: text-muted, listing-location, and text-truncate.
+
+In our script, we’ll write:
+
+airbnb_scraper.rb
+…
+# Display output onto the screen
+page.css('div.h5.listing-name').each do |line|
+  puts line.text
+end
+
+page.css('span.h3.price-amount').each do |line|
+  puts line.text
+end
+
+puts page.css('div.text-muted.listing-location.text-truncate')
+Let’s save and run this.
+
+Command Line
+$ ruby airbnb_scraper.rb
+Looks good, so let’s convert this into a loop like before:
+
+airbnb_scraper.rb
+…
+# Display output onto the screen
+page.css('div.h5.listing-name').each do |line|
+  puts line.text
+end
+
+page.css('span.h3.price-amount').each do |line|
+  puts line.text
+end
+
+page.css('div.text-muted.listing-location.text-truncate').each do |line|
+  puts line.text
+end
+Let’s save and run it again.
+
+Command Line
+$ ruby airbnb_scraper.rb
+This gives us the listing details, including the room type, the number of reviews, and the location. The three of these come grouped together in the HTML code, so we can’t use our usual scraping techniques to separate them. We’ll have to resort to something called parsing to split these apart. We’ll learn how to parse this later on, but let’s hold off for now.
+
+We’ve already done a lot this time. We checked Airbnb’s robots.txt file to make sure we weren’t violating their scraping policies. Then we wrote our script to collect each listing’s name, price, and details. Next time, we’ll take the data we’ve collected and store it into a spreadsheet by making some revisions to our script.
+
+4.store data
+write data to csv file
+In the last video, we scraped the first page of listings on the Airbnb site for places to rent in Brooklyn. In this video, we’re going to export our data into a CSV file so we can begin to analyze the information using Microsoft Excel. A CSV file, which stands for comma-separated values file, is just like the spreadsheet-version of a text file. It contains many values which are each separated by a comma, so when a program like Excel reads the file, each of those values get placed in its own cell.
+
+Let’s start by telling our script to use the ‘csv’ gem that comes installed by default with Ruby.
+
+airbnb_scraper.rb
+require 'nokogiri'
+require 'open-uri'
+require 'csv'
+ 
+# Store URL to be scraped
+url = "https://www.airbnb.com/s/Brooklyn--NY--United-States"
+ 
+# Parse the page with Nokogiri
+page = Nokogiri::HTML(open(url))
+ 
+# Display output onto the screen
+puts page
+This gem allows us to create CSV files as well as read information from existing CSV files.
+
+We’re now going to take each of the pieces of information we’re scraping and assign it to a variable. For the first one, let’s call the variable name because we’re storing information about each listing’s name. This is the same process we used to assign information to the variables url and page.
+
+We’ll write name = [ ]. This is saying that the variable name is going to be an array, which is represented by these open square brackets. An array is just a collection, allowing us to store multiple data points in a single variable. This array is currently empty because we haven’t written anything inside the brackets.
+
+Next, we’re going to change the process that occurs each time our data loops through. We’ll replace puts line.text with name << line.text.
+
+airbnb_scraper.rb
+…
+# Display output onto the screen
+name = []
+page.css('div.h5.listing-name').each do |line|
+  name << line.text
+end
+…
+This << symbol means to take the thing on the right, in this case, it’s the text within each line of HTML, and then add it to the variable on the left, name. Each line of HTML will go through this process so that by the time our loop finishes running, each of the 18 Airbnb listing names will have been added into our name array.
+
+Like before, let’s assign a variable to this called price. We’ll write:
+
+airbnb_scraper.rb
+…
+# Display output onto the screen
+name = []
+page.css('div.h5.listing-name').each do |line|
+  name << line.text
+end
+
+price = []
+page.css('span.h3.price-amount').each do |line|
+  price << line.text
+end
+…
+Here, we’re saying that the variable price will also be an array. To fill this array, we’re going to find in the HTML all the span tags with the two classes h3 and price-amount and add the text of the results into the ‘price’ variable.
+
+Let’s do the same thing for the listing details.
+
+airbnb_scraper.rb
+…
+# Display output onto the screen
+name = []
+page.css('div.h5.listing-name').each do |line|
+  name << line.text
+end
+
+price = []
+page.css('span.h3.price-amount').each do |line|
+  price << line.text
+end
+
+details = []
+page.css('div.text-muted.listing-location.text-truncate').each do |line|
+  details << line.text
+end
+Great. So what we’ve done so far is assigned each category of data we’re scraping into these three separate arrays. We’ll now be able to access that data simply through the variable itself.
+
+Let’s change this comment as well to say # Store data in arrays.
+
+airbnb_scraper.rb
+…
+# Store data in arrays
+…
+Let’s now write the code to actually create the CSV file and fill it out with the data we’ve collected. I’ll write the code first and explain it afterwards:
+
+airbnb_scraper.rb
+…
+# Write data to CSV file
+CSV.open("airbnb_listings.csv", "w") do |file|
+  name.length.times do |i|
+    file << [name[i], price[i], details[i]]
+  end
+end
+This first line is saying to open a file called airbnb_listings.csv in our current folder (or create it if it doesn’t exist already) and store it in the variable called file. Now the w here stands for “write” and this just means we’re writing, or adding, information into the file. The letter we use decides what privileges we want to have when working with this file. So instead of w we could also use r, which would allow us to read existing data from the file. Another popular one is a, which stands for append. The only difference between ‘write’ and ‘append’ is that ‘append’ adds data to the end of a file whereas ‘write’ will overwrite any data that exists already.
+
+We’ll notice that the syntax in the first line looks similar to that of loops, with the do, variable, and end at the bottom. But it’s missing something. In order to make a loop, we need a method like .each or .times, and this doesn’t have that, which means this isn’t a loop and will only occur once. In this case, it gives us permission to write to the file until we hit the end at the bottom, when the file will be closed.
+
+The next three lines create a loop because it has all three elements, a method, this do and a variable. This loop is different from our previous loops because instead of a .each method, we’re using this .times method. We use .each when we have a list of things and we want to do the same thing to every item on the list. .times is when we have a specific number in mind and we want to run the loop that number of times.
+
+So this loop is saying do the below action 18 times. It’s 18 because that’s the number of data points in our name array. The first time we go through the loop, we’ll have this variable i that will equal 0, the next time it’ll be 1, then 2, and so on. Since we’re running this loop 18 times, i will run from 0 to 17 (remember that computers always start counting at 0).
+
+Now what are we actually doing 18 times? In this line, we’re adding a new row of data to our airbnb_listings.csv file. This row has three columns. The data for the first column will come from our name array, the second from our price array, and the third from our details array.
+
+Our first time through the loop, i will equal 0, so we’ll be adding the first name, first price, and first set of details to our spreadsheet. The second time through the loop, i will be 1, so we’ll be adding the second name, price, and details. So basically, we’re adding the name, price, and details for each of our 18 Airbnb listings.
+
+Let’s save and finally run the code by typing ruby airbnb_scraper.rb.
+
+Command Line
+$ ruby airbnb_scraper.rb
+This time, nothing shows up on the screen because rather than displaying the data here, we’re writing all of it into a CSV file. But that doesn’t mean it didn’t work! If we go to the same folder that our airbnb_scraper.rb file is in (in my case, that’s my ‘alexyang’ folder), we should see a file called airbnb_listings.csv. Let’s go ahead and open it with Excel (or if you don’t have Excel, with Google Drive).
+
+This looks great! If we double-check with the Airbnb website, we can see that these listings match up exactly with the ones on the page.
+
+One last thing we can do to make our CSV file better is to add titles to our columns. Back in our code, let’s add file << ["Listing Name", "Price", "Details"].
+
+airbnb_scraper.rb
+…
+# Write data to CSV file
+CSV.open("airbnb_listings.csv", "w") do |file|
+  file << ["Listing Name", "Price", "Details"]
+
+  name.length.times do |i|
+    file << [name[i], price[i], details[i]]
+  end
+end
+This is adding a single row of data to our CSV file. This first row will have three cells, “Listing Name”, “Price”, and “Details”, and these will serve as our column titles.
+
+Let’s save and run our script again.
+
+Command Line
+$ ruby airbnb_scraper.rb
+Since we’ve overwritten this CSV file, let’s close it and open it again. There we go. Our column titles have been added. Looks great.
+
+So as a quick recap, in this video, we stored all of our listing information into array variables and used a loop to write the data contained in those variables into a CSV file. But notice that the third column of our data contains all the details of room type, the number of reviews, and the location. This is because when we were scraping that information, all this info was contained in the same HTML tag.
+
+But what if we want to take these details and display them in separate columns so they’re easier to analyze? That’s where parsing comes in. In the next video, we’ll learn how to convert our details column into three separate columns by using parsing techniques.
+
+parse data
+In the last video, we outputted the data we collected from Airbnb into the three columns of this CSV file. This time, we’ll use a technique called parsing to clean up the formatting of the data.
+
+For example, if we look in the first and third columns, we’ll see that the listing names and details all have these extra spaces in front. To fix this, we’ll go to our script and after line.text, we’ll add a .strip. We’ll do it once here for name and again for details.
+
+airbnb_scraper.rb
+…
+# Display output onto the screen
+name = [ ]
+page.css('div.h5.listing-name').each do |line|
+  name << line.text.strip
+end
+…
+details = [ ]
+page.css('div.text-muted.listing-location.text-truncate').each do |line|
+  details << line.text.strip
+end
+…
+The purpose of the strip method is to get rid of any leading spaces – it’s a pretty basic example of the types of problems that parsing is designed to solve.
+
+We can test out this code in our command line without outputting it to a CSV file by commenting out this code block. Now let’s write puts name here and puts details here to print the results to our screen instead of to the CSV file.
+
+airbnb_scraper.rb
+…
+# Store data in arrays
+name = [ ]
+page.css('div.h5.listing-name').each do |line|
+  name << line.text.strip
+end
+
+puts name
+
+price = [ ]
+page.css('span.h3.price-amount').each do |line|
+  price << line.text
+end
+
+details = [ ]
+page.css('div.text-muted.listing-location.text-truncate').each do |line|
+  details << line.text.strip
+end
+
+puts details
+
+# # Write data to CSV file
+# CSV.open("airbnb_listings.csv", "w") do |file|
+#   file << ["Listing Name", "Price", "Details"]
+# 
+#   name.length.times do |i|
+#     file << [name[i], price[i], details[i]]
+#   end
+# end
+Keep in mind that scraping and parsing the data are different from printing the data into a CSV file. This code here is what actually scrapes the Airbnb site, and this code block here is printing our results into a CSV file.
+
+Let’s save and run the script now.
+
+Command Line
+$ ruby airbnb_scraper.rb
+Good – we’ll look and see that none of the data has any spaces in front anymore.
+
+Ok, let’s go back to our spreadsheet. We’ll now work on fixing the remaining issue in the third column, where we have the room type, the number of reviews, and the location all combined together. Let’s see if we can split the information into three separate columns so it’s easier to analyze.
+
+This a little more complicated, so we’ll need to go to our Airbnb search page for Brooklyn. We’ll hover over this second line of listing details and right-click to ‘Inspect Element’. We can see here that these three pieces of information are split by this space, bullet point, space. Let’s copy this and use it in our code.
+
+In our code file, after this line.text.strip, we’ll add .split(/ · /).
+
+airbnb_scraper.rb
+…
+details = []
+page.css('div.text-muted.listing-location.text-truncate').each do |line|
+  details << line.text.strip.split(/ · /)
+end
+…
+This split method uses the space-bullet point-space pattern to divide the listing’s details into the three separate components that we need. This changes our original array of 18 listing details into an array of 18 sub-arrays, with each sub-array containing the listing type, number of reviews, and location.
+
+Let’s check to make sure our code worked. We’ll delete the puts name from before and leave the puts details to print just these results to our screen.
+
+airbnb_scraper.rb
+…
+# Store data in arrays
+name = [ ]
+page.css('div.h5.listing-name').each do |line|
+  name << line.text.strip
+end
+
+price = [ ]
+page.css('span.h3.price-amount').each do |line|
+  price << line.text
+end
+
+details = [ ]
+page.css('div.text-muted.listing-location.text-truncate').each do |line|
+  details << line.text.strip.split(/ · /)
+end
+
+puts details
+…
+Let’s save and run the script again.
+
+Command Line
+$ ruby airbnb_scraper.rb
+Good – each listing’s details are now separated into their own lines.
+
+Now that we’ve verified that it works, let’s output the new information into our CSV file again. We’ll delete this puts details and uncomment our CSV code.
+
+Here, the name, price, and details reflect the three columns in our database, so we’ll need to add a couple more columns for the new categories we’ve created.
+
+Instead of details[i], let’s change it to details[i][0] and add a comma, details[i][1] and comma details[i][2].
+
+airbnb_scraper.rb
+…
+details = [ ]
+page.css('div.text-muted.listing-location.text-truncate').each do |line|
+  details << line.text.strip.split(/ · /)
+end
+
+# Write data to CSV file
+CSV.open("airbnb_listings.csv", "w") do |file|
+  file << ["Listing Name", "Price", "Details"]
+
+  name.length.times do |i|
+    file << [name[i], price[i], details[i][0], details[i][1], details[i][2]]
+  end
+end
+We’re using the brackets twice here because the details variable is an array of sub-arrays. In other words, details[i] will give us the array of three elements and details[i][0] will give us the first of those three elements.
+
+We’ll also need to rename our column titles so let’s delete our “Details” title and add more specific ones:
+
+airbnb_scraper.rb
+…
+# Write data to CSV file
+CSV.open("airbnb_listings.csv", "w") do |file|
+  file << ["Listing Name", "Price", "Room Type", "Reviews", "Location"]
+
+  name.length.times do |i|
+    file << [name[i], price[i], details[i][0], details[i][1], details[i][2]]
+  end
+end
+Let’s save and run our script again.
+
+Command Line
+$ ruby airbnb_scraper.rb
+Now, let’s open up our airbnb_listings.csv file. Awesome, we now have 5 columns for each of our Airbnb listings, which makes the data much easier to manipulate and analyze.
+
+So in this video, we learned some basic parsing techniques, like using strip to remove leading spaces and using split to divide our details into three separate pieces. There’s a lot more you can do with parsing, but hopefully this gives you a taste of how it works.
+
+We’re now done with scraping Airbnb’s first page of search results in Brooklyn, but it makes much more sense to scrape not just one page, but all the pages of results. In the next video, we’ll learn how to scrape multiple pages and continue to add to the data in our growing CSV file.
+
+5.scale up
+scrape multiple pages
+Up to this point, we’ve scraped the important information from the 18 listings on Airbnb’s first page of search results in Brooklyn. Let’s take this a step further and scrape all the Brooklyn listings so we can analyze the data thoroughly.
+
+Let’s go to the Airbnb site, scroll to the bottom, and click on page 2 to see how the URL changes. It seems like it’s just added this ?page=2 to the end. If we go to page 3, now it becomes ?page=3. If we click on 56, it becomes ?page=56. Clearly, this is the URL pattern that Airbnb uses.
+
+It’s pretty easy to see the pattern here, but it’s important to understand the special cases as well. For example, our first page of search results omitted this ?page= pattern in the URL. But will it still work if we add it in? Let’s test it out – we’ll scroll to the bottom and click on the link for the first page.
+
+Without any page number in the URL, “Historic House in Williamsburg” is the first listing I see. If I add a ?page=1 and hit Enter, “Historic House in Williamsburg” still shows up as the first result. It looks like it’s still the same. Good to know.
+
+Now what happens if we exceed the 56th page? Let’s first scroll to the bottom and go to the last page. The first listing I see is “Huge Apartment in Caroll Gardens”. Let’s change 56 to 100. Looks like Airbnb will always show the same page of results once the page number gets too high.
+
+What this tells us is that we need to scrape the total number of pages listed here at the bottom to tell our script how many pages to scrape. Alternatively, we could hard-code this 56 number into our code, but since we have no guarantee that it’ll always be 56, I’d like to avoid doing that. For example, if we were to search a smaller location than Brooklyn or some Brooklyn hosts decided to take down their listings, there would be fewer pages. And if there were only say 50 pages, then our script would scrape as usual, not knowing that the last 6 pages would all look the same. We would get a bunch of repeat listings in our spreadsheet and we wouldn’t even know it.
+
+So let’s see how we can scrape this 56 number. We’ll right-click on it, select ‘Inspect Element’, and see that it says <a target="56">. Let’s now look at the full source code by right-clicking and selecting ‘View Page Source’. We’ll type Command-F or Control-F and search a target=. A few irrelevant matches show up first, but then we come to the section we’re looking for.
+
+This <div class="pagination"> section looks to be the part of the HTML that contains the page numbers that we’re looking for. And this part is a little tough to read, but all the page numbers seem to share a similar structure. They all have an <a> tag with a target attribute.
+
+So since there’s no clean way to get the 56 on its own, we’ll need to scrape all the page numbers (e.g. 1, 54, 55, 56) and just take the biggest one of the bunch. Not all the page numbers from 1 – 56 are listed here because that would take up too much space on the bottom of this page. But the last page will always be listed, and that’s the number we need.
+
+Since the a target= selector was too broad, grabbing some irrelevant HTML above, we’ll need to be more specific. We’ll instead find the <div> tag with class pagination, then find the <ul> tag nested inside it, then find the <li> tag nested inside that, and finally find the <a> tag nested inside that. That should definitely be specific enough to scrape this section only.
+
+Going back to our script, we’ll write similar code to what we did before. Let’s write the following:
+
+airbnb_scraper.rb
+…
+# Parse the page with Nokogiri
+page = Nokogiri::HTML(open(url))
+
+page_numbers = []
+page.css("div.pagination ul li a[target]").each do |line|
+ page_numbers << line.text
+end
+…
+Most of this should be familiar, but let me explain this selector we’re using. Each space here just means “nested inside”. So in English, this is saying to find the <div> tag with class pagination. Then find the <ul> tag nested inside the <div>. And then an <li> tag nested inside the <ul> tag and an <a> tag with a target attribute nested inside the <li> tag. Remember that we use .s for classes, #s for ids, and []s for everything else. All together, this code scrapes all the page numbers and stores them in the page_numbers array.
+
+Let’s test to see if this works by adding a puts page_numbers and we’ll comment out our CSV code and save.
+
+airbnb_scraper.rb
+…
+page_numbers = []
+page.css("div.pagination ul li a[target]").each do |line|
+ page_numbers << line.text
+end
+
+puts page_numbers
+…
+# # Write data to CSV file
+# CSV.open("airbnb_listings.csv", "w") do |file|
+#   file << ["Listing Name", "Price", "Room Type", "Reviews", "Location"]
+# 
+#   name.length.times do |i|
+#     file << [name[i], price[i], details[i][0], details[i][1], details[i][2]]
+#   end
+# end
+Command Line
+$ ruby airbnb_scraper.rb
+When we run this, we’ll see that it’s scraped the numbers 1, 2, 3, and 56. We can check this by going to our original URL (that’s the page our script is scraping), scrolling to the bottom, and seeing that we have 1, 2, 3, and 56.
+
+With this working, we’ll go back to our script. We now need to figure out how to take the largest of our page numbers. Let’s create another variable called max_page and write the following:
+
+airbnb_scraper.rb
+…
+page_numbers = []
+page.css("div.pagination ul li a[target]").each do |line|
+ page_numbers << line.text
+end
+
+max_page = page_numbers.max
+
+puts page_numbers
+Here we’re using .max to grab the biggest number in our page_numbers array. We’ll test to see if it works by deleting puts page_numbers and adding puts max_page.
+
+airbnb_scraper.rb
+…
+max_page = page_numbers.max
+
+puts max_page
+Let’s save and try again.
+
+Command Line
+$ ruby airbnb_scraper.rb
+Perfect – we got 56.
+
+We’ll write a note so we remember what this code does.
+
+airbnb_scraper.rb
+…
+# Scrape the max number of pages and store in max_page variable
+page_numbers = []
+page.css("div.pagination ul li a[target]").each do |line|
+ page_numbers << line.text
+end
+
+max_page = page_numbers.max
+…
+So what do we do now? Well remember that the reason why we wanted this number 56 was so that we could know how many pages of search results to scrape. Now that we have the max number, we can just edit the URLs and scrape ?page=1, ?page=2, all the way up to ?page=56. And since this process is pretty repetitive, we can design it all in a loop.
+
+Let’s delete the puts max_page and write max_page.times do |i|, tab in all the code before our CSV section (a shortcut to do this in Sublime Text is with ‘Command-]’ or ‘Control-]’) and close the loop with an end.
+
+airbnb_scraper.rb
+…
+max_page = page_numbers.max
+
+max_page.times do |i|
+
+  # Store data in arrays
+  name = [ ]
+  page.css('div.h5.listing-name').each do |line|
+    name << line.text.strip
+  end
+
+  price = [ ]
+  page.css('span.h3.price-amount').each do |line|
+    price << line.text
+  end
+
+  details = [ ]
+  page.css('div.text-muted.listing-location.text-truncate').each do |line|
+    details << line.text.strip.split(/ · /)
+  end
+
+end
+…
+This code will take max_page, which in this case is 56, and run the loop that many times. But to do this, there are a few changes we need to make.
+
+First, we need to add a .to_i to the end of our max_page line.
+
+airbnb_scraper.rb
+…
+max_page = page_numbers.max.to_i
+…
+This is a subtle point, but our computer interprets this max_page variable as a string, or text, but the .times method that creates the loop requires an integer. The .to_i tells our computer to interpret this as an integer instead.
+
+The second change we need to make is to redefine the URL we use. Since we’re scraping more than just the first page, we need a dynamic URL that will change each time we go through the loop. Let’s write:
+
+airbnb_scraper.rb
+…
+max_page.times do |i|
+
+  url = "https://www.airbnb.com/s/Brooklyn--NY--United-States?page=#{i+1}"
+  page = Nokogiri::HTML(open(url))
+
+  # Store data in arrays
+  name = [ ]
+  page.css('div.h5.listing-name').each do |line|
+    name << line.text.strip
+  end
+  …
+This hashtag in the middle tells our script that the URL isn’t ?page=#{i+1}, but that i+1 needs to be calculated and added to the end of the URL. Remember that i is the number of times we’ve gone through the loop. But since computers start counting 0, 1, 2, whereas our URLs will start with page equals 1, 2, 3, we need to use i+1.
+
+We’re almost ready to run our script. The final change we need to make is to bring our empty name, price, and details arrays outside of our loop. If we left them inside, then the first time through the loop, the array would start empty and be filled with our first page of listing results. The second time through the loop, this line of code would delete all the listings we just added, starting empty once again. So to allow all the data to accumulate, we need to move these lines of code outside the loop.
+
+Let’s write some comments to remind ourselves of the code.
+
+airbnb_scraper.rb
+…
+# Initialize empty arrays
+name = []
+price = []
+details = []
+
+# Loop once for every page of search results
+max_page.times do |i|
+
+  # Open search results page
+  url = "https://www.airbnb.com/s/Brooklyn--NY--United-States?page=#{i+1}"
+  page = Nokogiri::HTML(open(url))
+
+  # Store data in arrays
+  page.css('div.h5.listing-name').each do |line|
+    name << line.text.strip
+  end
+
+  page.css('span.h3.price-amount').each do |line|
+    price << line.text
+  end
+
+  page.css('div.text-muted.listing-location.text-truncate').each do |line|
+    details << line.text.strip.split(/ · /)
+  end
+
+end
+…
+Let’s uncomment out this section and we’re finally ready to run this.
+
+airbnb_scraper.rb
+…
+# Write data to CSV file
+CSV.open("airbnb_listings.csv", "w") do |file|
+  file << ["Listing Name", "Price", "Room Type", "Reviews", "Location"]
+
+  name.length.times do |i|
+    file << [name[i], price[i], details[i][0], details[i][1], details[i][2]]
+  end
+end
+
+Let’s save and go to our command line.
+
+Command Line
+$ ruby airbnb_scraper.rb
+This time when we run this, it’s going to take a while because there are 56 pages to scrape, so let’s wait a bit…
+
+Okay, looks like it finished. Let’s open up our airbnb_listings.csv file. If we scroll down, we’ll see that we have 1,008 listings (we’re not counting the column titles). If there are 18 listings to a page and 56 pages total, then that’s exactly 1,008 listings. We’ve finally scraped and collected data for every Brooklyn Airbnb listing.
+
+Great job! We were able to modify our script to scrape all the pages of Airbnb search results. We had to first scrape the number of pages, then use that in a loop to get everything. Now it might seem like we’re done, but there’s actually one remaining thing we have to do. We need to quality check the data to make sure that it’s exactly the way we expect it to be. That’s what we’ll focus on next time.
+
+check data quality
+Last time, we managed to collect the data on all 1,008 Brooklyn listings on Airbnb. They’re all in our CSV file, but let’s take some time to make sure they’re correct. Our logic was clear and we did a pretty good job of testing things as we went along, but from personal experience, I’ve found that 80-90% of the time, there’s always at least one thing that we missed.
+
+Just from looking at this list, it seems that everything is fine for the most part. But for larger data sets, a better way to check is to add a filter. This might be slightly different depending on whether you’re using Google Drive or Excel for Windows, but for the Mac version of Excel, I’ll highlight all the data, go to ‘Data’, and click ‘Filter’.
+
+Now if we click the arrow next to the column, we’ll be able to see a list of every value that appears in this column. So for a column like ‘Room Type’ with only a few options, it becomes really easy to see if anything seems out of place. Let’s go through each of these columns one-by-one.
+
+Listing names are pretty unique, but expanding this and quickly scrolling through this list, it looks fine. Let’s check prices. They all show up as numbers, like we expect. We’ve seen ‘Room Type’ already, so we’ll go to ‘Reviews’. We’ll expand this and scroll to the bottom. That’s odd…these last four look like they belong in the ‘Location’ column. Let’s scroll back up to the top and click ‘Select All’. Now we can go back to the bottom and check the four that look out of place.
+
+It’s really these 7 listings that are messed up. For some reason, they’re missing the reviews section, so the ‘Location’ info is getting pulled in instead. I suspect that these 7 listings have no reviews, so rather than display ‘0 reviews’, Airbnb chooses to omit that section completely.
+
+Let’s see if we can find one of these listings in our browser. That way we’ll know how to revise our script to fix the problem. For example, let’s find this listing in Bushwick, “Sunny private entrance room!”. Airbnb doesn’t allow us to search by the listing name, so we’ll have to use the other information to find it. I’ll search ‘Bushwick’, limit the search to private rooms only. Then I’ll narrow the price range to display just listings that cost $45/night.
+
+If we scroll down, we’ll see “Sunny private entrance room!” We can see that the details really do display just two sections, the ‘Room Type’ and the ‘Location’. So when our script splits this based on the ‘space bullet-point space’ pattern, rather than get three pieces, it’ll only get two. How do we modify our script to account for this?
+
+One way to do this is to first check to see if the line.text.strip.split sub-array has two or three pieces. If it has three pieces, we’ll add it to the details array as usual, but if it only has two pieces, then we’ll need to do something different.
+
+Let’s first store this line.text.strip.split(/ · /) sub-array in its own variable. We’ll write:
+
+airbnb_scraper.rb
+  …
+  page.css('div.text-muted.listing-location.text-truncate').each do |line|
+    subarray = line.text.strip.split(/ · /)
+    details << line.text.strip.split(/ · /)
+  end
+
+end
+…
+Now to check the number of pieces, we’ll use something called an ‘if statement’. We’ll write:
+
+airbnb_scraper.rb
+  …
+  page.css('div.text-muted.listing-location.text-truncate').each do |line|
+    subarray = line.text.strip.split(/ · /)
+
+    if subarray.length == 3
+      details << subarray
+    else
+      # to do
+    end
+  end
+
+end
+…
+This code says that if our subarray has 3 pieces, then we should add it to the details array as usual. The else says that if instead subarray doesn’t have 3 pieces, then we’ll need to tell our script to do something else. The end finishes our if statement.
+
+Notice that we’re using the double equals sign here. The rule of thumb is to use a single equals sign when you want to assign a value to a variable, but to use two equals signs when we’re comparing two things. Here, we’re comparing the length, or the number of pieces in our subarray, with the number 3, so we need two equals signs.
+
+Now let’s fill in the code for what to do when there are only two pieces:
+
+airbnb_scraper.rb
+  …
+  page.css('div.text-muted.listing-location.text-truncate').each do |line|
+    subarray = line.text.strip.split(/ · /)
+
+    if subarray.length == 3
+      details << subarray
+    else
+      details << [subarray[0], "0 reviews", subarray[1]]
+    end
+  end
+
+end
+…
+This is what we’re adding to the details array. subarray[0] and subarray[1] are the two pieces we’re grabbing from the listing, the room type and the location. Since the number of reviews isn’t shown on the page, we need to add it here ourselves. So together, this mimics the format that the other listings have.
+
+Okay, let’s save and try this out. We’ll run our script and wait for it to finish.
+
+Command Line
+$ ruby airbnb_scraper.rb
+When it’s done, we’ll reopen our CSV file. Now let’s add in our filters from before and check our ‘Reviews’ column. First, we’ll notice that ‘0 reviews’ falls at the very top, and if we scroll to the bottom, we’ll see that there aren’t any more rogue locations in the list anymore.
+
+We’ve now finished collecting our complete Airbnb data set for Brooklyn. In our next and final video, we’ll take a look at our data set and draw some insights and analysis from the information we’ve collected.
+
+6.conclusion
+analyze data
+Congrats on making it this far! Now that we have our final database, we can analyze the data and draw some insights on the rental market in Brooklyn, NY. This could be really useful if, for example, we were trying to price our own Airbnb listing of a private room in the Brooklyn neighborhood of Greenpoint. Let’s open our CSV file with all the listings.
+
+Now, we can add a filter. Here we’ll filter by room type, “private room”, and location, which is “Greenpoint”. After highlighting all the prices, we can go to the bottom and select ‘average’. The average price per night is ~$78.
+
+We could make our analysis as detailed as we like. For example, we could average only those listings that have a certain number of reviews. We could even do things like figure out the relationship between price and number of reviews, the most expensive neighborhood in Brooklyn, and the neighborhood with the most listings. The possibilities are endless.
+
+If we wanted to get more detailed, we could also extend our project further. For example, a good exercise is to try scraping data from multiple locations. Or you could add more columns of information by not just scraping the search results pages, but by going to each listing’s specific page and pulling out extra details like the maximum number of guests, or the number of bedrooms and bathrooms.
+
+Writing our script and getting to this point certainly wasn’t easy, especially if you haven’t had much experience with code. Keep in mind that I don’t recommend memorizing any of the code we’ve written. The most important thing is to look over the script and understand the logic behind the code. Understand why we’re doing what we’re doing because this same logic can be used to scrape other sites as well.
+
+Through writing this script, I hope you’ve learned not only the basics of web scraping, but also a little bit about the Ruby programming language and the power of using technology to gather and analyze data. I highly recommend you try out these techniques on a site of your choosing! Thanks a lot for taking this course.
+
+
+

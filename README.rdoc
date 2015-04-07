@@ -6703,4 +6703,7 @@ Writing our script and getting to this point certainly wasn’t easy, especially
 Through writing this script, I hope you’ve learned not only the basics of web scraping, but also a little bit about the Ruby programming language and the power of using technology to gather and analyze data. I highly recommend you try out these techniques on a site of your choosing! Thanks a lot for taking this course.
 
 
+Hari ini mudah mudahan kita bisa lebih menghargai orang lain
+
+
 

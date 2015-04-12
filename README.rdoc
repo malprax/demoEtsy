@@ -6755,6 +6755,7 @@ ada tong juga masalah di warnet mandai ini harus segera kelar sebelum bulan puas
 mudah mudahan ada jurus baru bisa didapat:
 1. upload file pdf di dropbox
 2. kasi tampil lewat pdfjs_rails
+3. bisa di download lewat tombol download
 
 
 

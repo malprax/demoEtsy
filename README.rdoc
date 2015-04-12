@@ -6743,6 +6743,7 @@ akhirnya hari ini lanjut lagi d warnet
 
 pasang glyphicon user
 icon aneh aneh
+nda tau ternyata cuman bisa sape 200 simbol di bootstrap
 
 
 

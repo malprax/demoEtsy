@@ -6864,3 +6864,4 @@ erorki ini git push heroku nya runiah
 
 sudah fix mi erronya runiah
 ternyata mau dirubah .gitinit config nya
+warnet jg sudah fix tadi malam

@@ -6866,3 +6866,5 @@ sudah fix mi erronya runiah
 ternyata mau dirubah .gitinit config nya
 warnet jg sudah fix tadi malam
 tinggal settingan manajemen bandwithnya
+
+skrg fokus di desain webnya runiah masih hancur di production

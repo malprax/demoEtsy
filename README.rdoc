@@ -6860,4 +6860,4 @@ nda tau yang mana ini mi error nya terakhir
 hari ini sy berhasil dapat error nya ini aplikasinya runiah
 jadi bisa move on sekarang eee
 sebentar juga bisa les lagi
-
+erorki ini git push heroku nya runiah

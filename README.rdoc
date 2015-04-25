@@ -6861,3 +6861,5 @@ hari ini sy berhasil dapat error nya ini aplikasinya runiah
 jadi bisa move on sekarang eee
 sebentar juga bisa les lagi
 erorki ini git push heroku nya runiah
+
+sudah fix mi erronya runiah

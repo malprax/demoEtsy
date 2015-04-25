@@ -6869,3 +6869,5 @@ tinggal settingan manajemen bandwithnya
 
 skrg fokus di desain webnya runiah masih hancur di production
 juga mau kursus lagi
+baik itu yang berbayar 
+ataupun yang tidak

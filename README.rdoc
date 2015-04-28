@@ -6901,4 +6901,5 @@ ini speedy mau di te dulu ini immang
 AC:3C:0B:54:25:69
 40:F0:2F:3C:75:59
 B4:F0:AB:DD:CD:7F
-F8:D0:BD:8E:DE:3E
+F8:D0:BD:8E:DE:3E #riskaku
+ini semua no mac address harus diblokir

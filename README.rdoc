@@ -6893,3 +6893,5 @@ dimulai hari ini dengan menyetel domain runiah
 kemudian membuat check_box_tag dan min max di craiglist
 kemudian membuat tampilan nya lebih profesional di index
 setelah itu dilanjutkan materi ke bab 7
+
+tinggal 5 film baru saya ke telkom memang mantap ini craiglist

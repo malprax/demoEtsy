@@ -6890,3 +6890,4 @@ sebentar istirahat jam 11 malam lagi
 
 kemarin banyak sekali tutorial baserails yang dibaca
 dimulai hari ini dengan menyetel domain runiah
+kemudian membuat check_box_tag di craiglist

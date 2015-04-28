@@ -6903,3 +6903,4 @@ AC:3C:0B:54:25:69
 B4:F0:AB:DD:CD:7F
 F8:D0:BD:8E:DE:3E #riskaku
 ini semua no mac address harus diblokir
+tinggal buktikan apa memang selalu kita terganggu oleh torrent

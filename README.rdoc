@@ -6904,3 +6904,5 @@ B4:F0:AB:DD:CD:7F
 F8:D0:BD:8E:DE:3E #riskaku
 ini semua no mac address harus diblokir
 tinggal buktikan apa memang selalu kita terganggu oleh torrent
+
+hari ini sudah banyak yang di baca di baserails

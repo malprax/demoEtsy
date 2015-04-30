@@ -6919,3 +6919,4 @@ error git push sudah bisa teratasi karena di hapus master.lock
 sudah selesai mengajar autocad hari ini
 sudah juga pergi cari klinik kulit
 skarang lagi kerja mailboxer gem
+untuk melayani email yang masuk ke website runiah school

@@ -6921,3 +6921,4 @@ sudah juga pergi cari klinik kulit
 skarang lagi kerja mailboxer gem
 untuk melayani email yang masuk ke website runiah school
 belum dapat efeknya sampai sekarang 
+baru tahap konfigurasi devise

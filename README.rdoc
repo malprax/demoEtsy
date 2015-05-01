@@ -6926,3 +6926,5 @@ tambahkan name pada devise
 sekarang melangkah ke install mailboxer
 make mailbox controlller
 make conversation controller
+
+mulai coding folder_views and conversation.html

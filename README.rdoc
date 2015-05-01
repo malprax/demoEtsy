@@ -6931,3 +6931,4 @@ mulai coding folder_views and conversation.html
 install gem chosen-rails
 konfigurasi gem 
 masih banyak error ini tapi mata sudah ngantuk
+banyak tutorial tentang webrtc juga tadi di buka

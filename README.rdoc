@@ -6929,3 +6929,4 @@ make conversation controller
 
 mulai coding folder_views and conversation.html
 install gem chosen-rails
+konfigurasi gem 

@@ -6933,3 +6933,5 @@ konfigurasi gem
 masih banyak error ini tapi mata sudah ngantuk
 banyak tutorial tentang webrtc juga tadi di buka
 tapi ini lagi lagi yang saya kasi masuk di runiah malah error aplikasi emailnya
+
+sudah download aplikasi webrtc

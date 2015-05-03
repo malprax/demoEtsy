@@ -6957,3 +6957,6 @@ sudah itu ujian ngoding buat baserails
 sekarang belajar dulu di codecademy
 besok ajukan permohonan untuk mundur dari penawaran al azhar
 ini juga tetap lanjut penelitian laboratorium bahasa
+Pr berat dirails
+upload data dalam bentuk excel dan bisa lagi di download dalam bentuk excel
+sudah selesai dulu belajar di codecademy malam ini 

@@ -279,6 +279,20 @@ We also get all this other data, like the post’s heading, timestamp, a bunch o
 So to sum up, in this video we made our first actual data request. We learned how 3taps uses its system of anchor values to keep track of whether data is old or new, and we made an API call to get an initial anchor to use. We then used that anchor in a second request to get back data, which was formatted nicely for us from the JSON Formatter Chrome extension we installed. All of this practice with making API calls will be put to good use next time, as we add optional parameters to build out our request further.
 
 Refine Our API Request:
+Add a filter for Craigslist posts only
+Add &source=CRAIG to the end of the URL. The complete URL should look like this: http://polling.3taps.com/poll?auth_token={API_KEY}&anchor={ANCHOR}&source=CRAIG@
+
+
+Filter for apartments available for rent
+Add &category_group=RRRR&category=RHFR to the URL.
+
+
+Filter for postings in Brooklyn, NY only
+Add &location.city=USA-NYM-BRL to the URL.
+
+
+Choose which additional fields should be returned
+Add &retvals=location,external_url,heading,body,timestamp,price,images,annotations to the end of the URL.
 In the last video, we received our first set of 3taps posting data. We got an initial anchor, which 3taps will use to remember which posts we have or haven’t seen yet.
 As a refresher, here’s the API request we made last time. Note that your data may have changed, as it’s being updated constantly. If we collapse the postings section by clicking on the small gray arrow, we’ll see that there are 1,000 items, which is the maximum that 3taps will return to us. Most of these aren’t what we’re looking for though, so let’s add a few more parameters to our API request to refine the results we receive.
 
@@ -6979,3 +6993,4 @@ bangun jemput adhi
 siap ujian online
 dimulai dari task terakhir
 buat scraping website dengan craiglist
+sekarang baru melangkah ke pembuatan scrape nya di rails

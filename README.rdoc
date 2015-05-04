@@ -224,6 +224,19 @@ We’ll skip over the fifth and final section of the Reference API because we wo
 Now that we’ve taken a close look at the data available in 3taps, including the various sources, categories, and locations, we’re ready for the next section, where we’ll move on from the Reference API and turn our attention to the Polling API, which we’ll use to start collecting the apartment listing data we need.
 
 Retrieve Posting Data:
+Get an anchor value through an Anchor API Call
+Visit convert-unix-time.com and find a timestamp (e.g. one for the current hour). Then use this to create a data request: http://polling.3taps.com/anchor?auth_token={API_KEY}&timestamp={TIMESTAMP}.
+
+
+Submit a data request using a Poll API Call
+Visit http://polling.3taps.com/poll?auth_token={API_KEY}&anchor={ANCHOR}.
+
+
+Install the JSON Formatter Google Chrome extension
+In the Chrome browser, click the button on the upper-right, go to “More tools”, and select “Extensions”. Scroll to the bottom and click on “Get more extensions”. In the search bar, type “JSON Formatter” and hit Enter. Under ‘Extensions’, click the button to download and select ‘Add’ to give it the right permissions.
+
+
+
 Last time, we took a look at the 3taps Reference API to learn about the data they had available. We learned that 3taps collects data from many sites beyond just Craigslist, such as Cars.com, eBay, and Indeed. We also saw that 3taps uses Category Groups, Categories, and Locations to organize the data it retrieves. In this video, we’ll start using the Polling API to start gathering data for ourselves.
 
 When we were first introduced to the 3taps documentation last time, we saw that there were three different APIs available: Search, Polling, and Reference. We’ve looked at the Reference API already, so let’s take a look at the two others, starting with the Search API.

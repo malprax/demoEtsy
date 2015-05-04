@@ -6994,3 +6994,4 @@ siap ujian online
 dimulai dari task terakhir
 buat scraping website dengan craiglist
 sekarang baru melangkah ke pembuatan scrape nya di rails
+cukup dulu

@@ -1058,6 +1058,61 @@ Our index page is now looking pretty good, with nice formatting and Bootstrap-st
 
 4.Gather Detailed Data
 Scrape Apartment Details:
+Add extra fields to our Post database
+Command Line
+$ rails generate migration AddFieldsToPosts bedrooms:integer bathrooms:decimal sqft:integer cats dogs w_d_in_unit street_parking
+$ rake db:migrate
+Don’t forget to restart your Rails server!
+
+Command Line
+$ rails s
+
+Write a rake task to clear the Post database
+lib/tasks/scraper.rake
+desc "Destroy all posting data"
+task destroy_all_posts: :environment do
+  Post.destroy_all
+end
+Run this task with rake scraper:destroy_all_posts
+
+Command Line
+$ rake scraper:destroy_all_posts
+
+Revise our rake task to scrape the new fields
+lib/tasks/scraper.rake
+…
+# Display results to screen
+# puts result["postings"].first["annotations"]["sqft"]
+
+# Store results in database
+result["postings"].each do |posting|
+
+  # Create new Post
+  @post = Post.new
+  @post.heading = posting["heading"]
+  @post.body = posting["body"]
+  @post.price = posting["price"]
+  @post.neighborhood = posting["location"]["locality"]
+  @post.external_url = posting["external_url"]
+  @post.timestamp = posting["timestamp"]
+  @post.bedrooms = posting["annotations"]["bedrooms"] if posting["annotations"]["bedrooms"].present?
+  @post.bathrooms = posting["annotations"]["bathrooms"] if posting["annotations"]["bathrooms"].present?
+  @post.sqft = posting["annotations"]["sqft"] if posting["annotations"]["sqft"].present?
+  @post.cats = posting["annotations"]["cats"] if posting["annotations"]["cats"].present?
+  @post.dogs = posting["annotations"]["dogs"] if posting["annotations"]["dogs"].present?
+  @post.w_d_in_unit = posting["annotations"]["w_d_in_unit"] if posting["annotations"]["w_d_in_unit"].present?
+  @post.street_parking = posting["annotations"]["street_parking"] if posting["annotations"]["street_parking"].present?
+
+  # Save Post
+  @post.save
+…
+Re-scrape the data we need
+
+Command Line
+$ rake scraper:scrape
+
+Download SQLite Database Browser
+Open the craigslist_scraper/db/development.sqlite3 file and check that the data was populated correctly.
 In the last few videos, we created our web app, loaded it with Craigslist data that we got from 3taps, and added some basic styling to our index page to allow our app to look presentable. This time, we’ll go back and take a second look at our 3taps data to see if we can pull some extra details.
 
 If we look at any apartment listing on Craigslist, we’ll see that there are these tags on the right side. These tags show details like the number of bedrooms and bathrooms, when the apartment will be available, and whether cats or dogs are allowed. But these tags vary from post to post. They’re all optional, so some listings will be more complete than others.

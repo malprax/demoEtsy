@@ -433,6 +433,60 @@ Now we’ll see that all our results are from Craigslist, limited to posts relat
 
 
 Create a Rake Task:
+Create a new Rails app
+Command Line
+$ rails new craigslist_scraper
+
+Generate a Post scaffold
+Command Line
+$ rails generate scaffold Post heading body:text price:decimal neighborhood external_url timestamp
+$ rake db:migrate
+Don’t forget to restart your Rails server!
+
+
+Generate two new rake tasks: scrape and destroy_all_posts
+Command Line
+$ rails generate task scraper scrape destroy_all_posts
+
+Populate the scrape task with our code from last time
+lib/tasks/scraper.rake
+namespace :scraper do
+  desc "Fetch Craigslist posts from 3taps"
+  task scrape: :environment do
+    require 'open-uri'
+    require 'json'
+
+    # Set API token and URL
+    auth_token = "36ba890f43a7cfa7e5a68e23c6ed435d"
+    polling_url = "http://polling.3taps.com/poll"
+
+    # Specify request parameters
+    params = {
+      auth_token: auth_token,
+      anchor: 1503713374,
+      source: "CRAIG",
+      category_group: "RRRR",
+      category: "RHFR",
+      'location.city' => "USA-NYM-BRL",
+      retvals: "location,external_url,heading,body,timestamp,price,images,annotations"
+    }
+
+    # Prepare API request
+    uri = URI.parse(polling_url)
+    uri.query = URI.encode_www_form(params)
+
+    # Submit request
+    result = JSON.parse(open(uri).read)
+
+    # Display results to screen
+    puts JSON.pretty_generate result
+  end
+  …
+
+Run the scrape task in our command line
+Command Line
+$ rake scraper:scrape
+
 Up to this point, we’ve managed to access Craigslist posts by making data requests to the 3taps API both through our browser and through the Ruby script we wrote. Now we’re going to switch gears and start building our web app.
 
 For this portion of the course, I’ll assume that you’re already familiar with the fundamentals of building a Rails app, so I’m going to skip over basic Rails concepts like Gemfiles and launching the Rails server. That’ll allow us more time to focus on the more advanced topics that aren’t covered in the beginner-level BaseRails courses.

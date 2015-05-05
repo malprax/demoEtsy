@@ -938,7 +938,53 @@ app/views/posts/index.html.erb
 Through our Bootstrap styling, data formatting, and removal of a couple columns, our table looks much better than it did at the start of this video. In the next video, we’ll continue working on this index page by adding pagination so we don’t need to load all 1,000 posts here at once.
 
 Paginate the Index Page:
+Add the will_paginate gem
+Gemfile
+…
+gem 'will_paginate', '~> 3.0.6'
+Command Line
+$ bundle install
+Don’t forget to restart your Rails server!
 
+
+Set up the will_paginate gem
+app/controllers/posts_controller.rb
+…
+def index
+  @posts = Post.all.paginate(:page => params[:page], :per_page => 30)
+end
+…
+app/views/posts/index.html.erb
+…
+  </table>
+
+  <%= will_paginate @posts %>
+
+  <br>
+
+  <%= link_to 'New Post', new_post_path %>
+</div>
+
+Add the will_paginate-bootstrap gem
+Gemfile
+…
+gem 'will_paginate-bootstrap'
+Command Line
+$ bundle install
+Don’t forget to restart your Rails server!
+
+
+Set up the will_paginate-bootstrap gem
+app/views/posts/index.html.erb
+…
+  </table>
+
+  <%= will_paginate @posts, renderer: BootstrapPagination::Rails %>
+
+  <br>
+
+  <%= link_to 'New Post', new_post_path %>
+</div>
 Here’s what our index page looks like now. What we’ll do in this video is add pagination to divide these 1,000 posts into multiple pages.
 
 Whenever you want to add a new feature on your site, it helps to know which gems are available so you can avoid having to write all the code from scratch. A great resource for discovering and comparing gems is a site called The Ruby Toolbox.

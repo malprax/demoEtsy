@@ -7051,3 +7051,4 @@ sekarang baru melangkah ke pembuatan scrape nya di rails
 cukup dulu
 
 bikin scarping di rails mi
+install bootstrap 3 dengan boostrap-sass

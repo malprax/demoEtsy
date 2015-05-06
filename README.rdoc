@@ -7218,3 +7218,5 @@ bikin scarping di rails mi
 install bootstrap 3 dengan boostrap-sass
 banyak mi dikerja ini hari untuk craiglist
 sekarang ini adami di bagian edit show
+
+mulai hari ini dengan kerja craiglist

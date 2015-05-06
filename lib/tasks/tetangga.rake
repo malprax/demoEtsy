@@ -1,0 +1,2 @@
+namespace :tetangga do
+end

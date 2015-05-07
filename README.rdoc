@@ -7226,3 +7226,4 @@ sudah fix anchor model
 
 kamis buat commit satu kali dulu
 habis mi kuota ku di base rails.com
+ini web site juga mau searching yang gampang gampang dulu saja

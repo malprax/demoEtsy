@@ -7225,3 +7225,4 @@ buat anchor model
 sudah fix anchor model
 
 kamis buat commit satu kali dulu
+habis mi kuota ku di base rails.com

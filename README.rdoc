@@ -7255,3 +7255,5 @@ ingat upwork tinggal 34 connect
 itu artinya tinggal bisa apply 17 work apply
 dan bulan ini lagi 20 hari
 itu artinya saya libur dulu tiga hari
+
+the rails view sampai halaman 82

@@ -7257,3 +7257,4 @@ dan bulan ini lagi 20 hari
 itu artinya saya libur dulu tiga hari
 
 the rails view sampai halaman 82
+Deploying rails sampai halaman 0

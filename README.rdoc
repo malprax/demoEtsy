@@ -7306,3 +7306,48 @@ ingat ke rumah kos
 sudah ke rumah kos
 skrang jangan liat odesk setiap jam
 mesti ada waktu untuk melihat odesk
+
+mencoba bedakan private, protected
+
+class X
+  def a
+    puts b
+  end
+  private
+  def b
+    puts "hi"
+  end
+end
+
+class Y
+  def c
+    puts d
+  end
+  protected
+  def d
+    puts "hello"
+  end
+end
+
+class Z<X
+  def e
+    puts f
+  end
+  
+  def g
+    puts h
+  end
+  private
+  def f
+    puts "hello"
+  end
+  
+  protected
+  def h
+    puts "hello"
+  end
+end
+  
+
+
+  

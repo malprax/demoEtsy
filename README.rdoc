@@ -7347,6 +7347,8 @@ class Z<X
     puts "hello"
   end
 end
+
+searching different member and collection
   
 
 

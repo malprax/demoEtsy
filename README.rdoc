@@ -7349,6 +7349,7 @@ class Z<X
 end
 
 searching different member and collection
+member need id like photos/1/preview
   
 
 

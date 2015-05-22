@@ -7390,6 +7390,7 @@ fix error rvm
 
 tadi malam sudah bisa setting modem gphone
 ini lagi mau membaca rails recipes
+siapa tau adayang bisa diperbaiki dengan cepat
   
 
 

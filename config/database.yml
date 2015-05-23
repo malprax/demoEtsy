@@ -17,12 +17,9 @@ development:
   <<: *defaults 
   
 
-test: &test
-  database: demoEtsy_test 
-  <<: *defaults   
 
-# production:  
-#   database: contact_book_production
-#   <<: *defaults 
-cucumber:
-  <<: *test
+production:
+  database: contact_book_production
+  <<: *defaults
+  
+ 

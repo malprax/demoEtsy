@@ -7399,6 +7399,7 @@ besok baca baca lagi
 lanjut sebentar baca baca rails recipes
 baru buat website demoetsy versi yayasan
 database mesti siap buat donatur bulan depan
+dapat ilmu baru association table
   
 
 

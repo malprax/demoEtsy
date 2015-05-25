@@ -7400,6 +7400,8 @@ lanjut sebentar baca baca rails recipes
 baru buat website demoetsy versi yayasan
 database mesti siap buat donatur bulan depan
 dapat ilmu baru association table
+
+berhasilmi di dapat errornya rails rvm reinstall ruby-2.2.0 --with-openssl-dir=/path/to/openssl
   
 
 

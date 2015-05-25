@@ -7407,7 +7407,8 @@ brew install libxml2
 brew install libxlt
 brew link libxml2 libxslt
 brew install libiconv
-gem install nokogiri -- --with-xml2-include=/usr/local/Cellar/libxml2/2.9.2/include/libxml2 --with-xml2-lib=/usr/local/Cellar/libxml2/2.9.2/lib --with-xslt-dir=/usr/local/Cellar/libxslt/1.1.28_1 --with-iconv-include=/usr/local/Cellar/libiconv/1.14/include --with-iconv-lib=/usr/local/Cellar/libiconv/1.14/lib
+bundle config build.nokogiri --use-system-libraries
+gem install nokogiri 
 
   
 
